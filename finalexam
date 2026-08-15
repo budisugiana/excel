@@ -1,0 +1,1730 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Practical Excel Assessment | Basic to Intermediate</title>
+<style>
+:root{
+  --navy:#0B2545;
+  --navy-2:#123363;
+  --blue:#1E5FA8;
+  --blue-light:#EAF2FB;
+  --bg:#F3F6FA;
+  --panel:#FFFFFF;
+  --gray:#5B6B7C;
+  --gray-light:#8896A6;
+  --border:#E1E7EF;
+  --green:#1E8A5F;
+  --green-bg:#E7F6EF;
+  --orange:#D9822B;
+  --orange-bg:#FCF1E2;
+  --red:#C0392B;
+  --red-bg:#FBEAE8;
+  --mono:'IBM Plex Mono','Courier New',monospace;
+  --display:'Segoe UI Semibold','Space Grotesk','Segoe UI',system-ui,sans-serif;
+  --body:'Segoe UI','Inter',system-ui,-apple-system,sans-serif;
+  --radius:10px;
+  --shadow:0 1px 2px rgba(11,37,69,0.06),0 4px 14px rgba(11,37,69,0.06);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{
+  font-family:var(--body);
+  background:var(--bg);
+  color:var(--navy);
+  line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4{font-family:var(--display);color:var(--navy);}
+button{font-family:var(--body);cursor:pointer;}
+input,select,textarea{font-family:var(--body);}
+.mono{font-family:var(--mono);}
+.hidden{display:none !important;}
+
+/* ===== Scrollbar polish ===== */
+::-webkit-scrollbar{width:8px;height:8px;}
+::-webkit-scrollbar-thumb{background:#C7D2E0;border-radius:8px;}
+
+/* ===== WELCOME SCREEN ===== */
+#screen-welcome{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:
+    radial-gradient(circle at 15% 20%, rgba(30,95,168,0.35), transparent 45%),
+    radial-gradient(circle at 85% 80%, rgba(30,138,95,0.25), transparent 45%),
+    linear-gradient(160deg,var(--navy) 0%, #08192F 100%);
+  padding:32px 16px;
+}
+.welcome-card{
+  background:var(--panel);
+  width:100%;
+  max-width:760px;
+  border-radius:16px;
+  box-shadow:0 20px 60px rgba(0,0,0,0.35);
+  overflow:hidden;
+}
+.welcome-head{
+  background:linear-gradient(120deg,var(--navy),var(--blue));
+  color:#fff;
+  padding:36px 40px 28px;
+  position:relative;
+}
+.welcome-head::after{
+  content:"";
+  position:absolute;left:0;right:0;bottom:0;height:4px;
+  background:linear-gradient(90deg,var(--green),var(--blue),var(--orange));
+}
+.eyebrow{
+  font-size:12px;letter-spacing:2.5px;text-transform:uppercase;
+  color:#AFC7E8;font-weight:600;margin-bottom:10px;
+}
+.welcome-head h1{color:#fff;font-size:28px;letter-spacing:0.3px;margin-bottom:6px;}
+.welcome-head p{color:#CBDCF2;font-size:14.5px;}
+.welcome-body{padding:32px 40px 36px;}
+.welcome-body h3{font-size:14px;text-transform:uppercase;letter-spacing:1px;color:var(--blue);margin-bottom:12px;}
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:26px;}
+.field{display:flex;flex-direction:column;gap:6px;}
+.field label{font-size:12.5px;font-weight:600;color:var(--gray);}
+.field input{
+  border:1.5px solid var(--border);border-radius:8px;padding:10px 12px;
+  font-size:14px;color:var(--navy);outline:none;transition:border-color .15s;
+  background:#FAFBFD;
+}
+.field input:focus{border-color:var(--blue);background:#fff;}
+.instruction-list{list-style:none;display:flex;flex-direction:column;gap:10px;margin-bottom:26px;}
+.instruction-list li{
+  display:flex;gap:10px;font-size:13.5px;color:var(--navy);align-items:flex-start;
+  background:var(--blue-light);border-radius:8px;padding:10px 12px;
+}
+.instruction-list li b{color:var(--blue);font-family:var(--mono);}
+.checkbox-row{display:flex;align-items:center;gap:10px;margin-bottom:20px;font-size:13.5px;color:var(--gray);}
+.checkbox-row input{width:16px;height:16px;accent-color:var(--blue);}
+.btn{
+  border:none;border-radius:8px;padding:12px 22px;font-size:14.5px;font-weight:600;
+  transition:transform .1s, box-shadow .1s, background .15s; letter-spacing:.2px;
+}
+.btn:active{transform:translateY(1px);}
+.btn-primary{background:var(--blue);color:#fff;box-shadow:0 6px 16px rgba(30,95,168,0.35);}
+.btn-primary:hover{background:var(--navy-2);}
+.btn-primary:disabled{background:#B7C6D8;box-shadow:none;cursor:not-allowed;}
+.btn-outline{background:#fff;color:var(--blue);border:1.5px solid var(--blue);}
+.btn-outline:hover{background:var(--blue-light);}
+.btn-ghost{background:transparent;color:var(--gray);border:1.5px solid var(--border);}
+.btn-ghost:hover{background:#F2F5F9;}
+.btn-danger{background:var(--red);color:#fff;}
+.btn-full{width:100%;}
+.btn-sm{padding:7px 14px;font-size:12.5px;border-radius:7px;}
+
+/* ===== APP SHELL ===== */
+#app{display:none;min-height:100vh;grid-template-columns:250px 1fr;grid-template-rows:auto 1fr;}
+#app.active{display:grid;}
+.topbar{
+  grid-column:1 / -1;
+  background:var(--navy);
+  color:#fff;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 24px;height:64px;
+  box-shadow:0 2px 10px rgba(0,0,0,0.15);
+  position:sticky;top:0;z-index:50;
+}
+.topbar-left{display:flex;align-items:center;gap:14px;}
+.brand{display:flex;flex-direction:column;line-height:1.15;}
+.brand b{font-family:var(--display);font-size:15px;letter-spacing:.4px;}
+.brand span{font-size:10.5px;color:#9FB6D6;letter-spacing:.6px;text-transform:uppercase;}
+.brand-mark{
+  width:34px;height:34px;border-radius:8px;
+  background:linear-gradient(135deg,var(--blue),var(--green));
+  display:flex;align-items:center;justify-content:center;font-family:var(--display);
+  font-weight:700;font-size:14px;
+}
+.topbar-mid{display:flex;align-items:center;gap:18px;}
+.participant-chip{font-size:12px;color:#C9DAF0;display:flex;gap:6px;align-items:center;}
+.participant-chip b{color:#fff;}
+.timer-box{
+  display:flex;align-items:center;gap:8px;
+  background:rgba(255,255,255,0.08);
+  padding:7px 14px;border-radius:8px;font-family:var(--mono);font-size:15px;font-weight:600;
+  border:1px solid rgba(255,255,255,0.12);
+}
+.timer-box.warn{background:rgba(217,130,43,0.25);border-color:var(--orange);color:#FFDCB2;animation:pulse 1s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.55;}}
+.topbar-right{display:flex;gap:10px;align-items:center;}
+.icon-btn{
+  background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.14);color:#fff;
+  border-radius:7px;padding:8px 12px;font-size:12.5px;display:flex;gap:6px;align-items:center;
+}
+.icon-btn:hover{background:rgba(255,255,255,0.16);}
+
+/* SIDEBAR */
+.sidebar{
+  background:#fff;border-right:1px solid var(--border);
+  padding:20px 14px;display:flex;flex-direction:column;gap:4px;
+  position:sticky;top:64px;height:calc(100vh - 64px);overflow-y:auto;
+}
+.nav-label{font-size:11px;text-transform:uppercase;letter-spacing:1.2px;color:var(--gray-light);margin:14px 10px 6px;font-weight:700;}
+.nav-item{
+  display:flex;align-items:center;justify-content:space-between;gap:8px;
+  padding:10px 12px;border-radius:8px;font-size:13.5px;font-weight:600;color:var(--gray);
+  border:1px solid transparent; text-align:left; background:transparent; width:100%;
+}
+.nav-item:hover{background:var(--blue-light);color:var(--blue);}
+.nav-item.active{background:var(--blue);color:#fff;}
+.nav-item .count{
+  font-family:var(--mono);font-size:11px;background:rgba(0,0,0,0.06);
+  padding:1px 7px;border-radius:20px;
+}
+.nav-item.active .count{background:rgba(255,255,255,0.22);}
+.sidebar-progress{margin:16px 10px 4px;padding:12px;background:var(--blue-light);border-radius:10px;}
+.sidebar-progress .pct{font-family:var(--display);font-size:22px;color:var(--blue);}
+.sidebar-progress .lbl{font-size:11px;color:var(--gray);text-transform:uppercase;letter-spacing:.6px;}
+.progressbar{height:7px;border-radius:6px;background:#DCE6F2;overflow:hidden;margin-top:8px;}
+.progressbar > div{height:100%;background:linear-gradient(90deg,var(--blue),var(--green));border-radius:6px;transition:width .3s;}
+
+/* MAIN */
+.main{padding:26px 30px 60px;overflow-x:hidden;}
+.section{display:none;}
+.section.active{display:block;animation:fadein .25s ease;}
+@keyframes fadein{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+.section-head{margin-bottom:22px;}
+.section-head h2{font-size:22px;margin-bottom:4px;}
+.section-head p{color:var(--gray);font-size:13.5px;}
+
+/* DASHBOARD CARDS */
+.dash-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:26px;}
+.dash-card{
+  background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);
+  padding:16px 18px;box-shadow:var(--shadow);
+}
+.dash-card .lbl{font-size:11px;text-transform:uppercase;letter-spacing:.7px;color:var(--gray-light);font-weight:700;margin-bottom:8px;}
+.dash-card .val{font-family:var(--display);font-size:26px;color:var(--navy);}
+.dash-card .val.blue{color:var(--blue);}
+.dash-card .val.green{color:var(--green);}
+.dash-card .val.orange{color:var(--orange);}
+.dash-card .sub{font-size:11.5px;color:var(--gray-light);margin-top:4px;}
+
+.info-banner{
+  background:linear-gradient(120deg,var(--navy),var(--navy-2));
+  color:#fff;border-radius:14px;padding:22px 26px;margin-bottom:26px;
+  display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;
+}
+.info-banner h3{color:#fff;font-size:17px;margin-bottom:6px;}
+.info-banner p{color:#C9DAF0;font-size:13px;max-width:520px;}
+
+.level-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:10px;}
+.level-card{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow);}
+.level-card .tag{display:inline-block;font-size:10.5px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;padding:3px 9px;border-radius:20px;margin-bottom:10px;}
+.tag-basic{background:var(--green-bg);color:var(--green);}
+.tag-mid{background:var(--blue-light);color:var(--blue);}
+.tag-adv{background:var(--orange-bg);color:var(--orange);}
+.level-card h4{font-size:15px;margin-bottom:6px;}
+.level-card p{font-size:12.5px;color:var(--gray);margin-bottom:12px;}
+.level-card .meta{display:flex;justify-content:space-between;font-size:11.5px;color:var(--gray-light);}
+
+/* TASK CARD */
+.task-card{
+  background:var(--panel);border:1px solid var(--border);border-radius:12px;
+  margin-bottom:20px;box-shadow:var(--shadow);overflow:hidden;
+}
+.task-head{
+  display:flex;justify-content:space-between;align-items:flex-start;gap:14px;
+  padding:18px 22px;border-bottom:1px solid var(--border);
+  background:linear-gradient(180deg,#FBFCFE,#fff);
+}
+.task-head-left{display:flex;gap:14px;align-items:flex-start;}
+.task-num{
+  font-family:var(--display);font-size:13px;font-weight:700;color:#fff;
+  background:var(--navy);width:38px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.task-titlewrap h3{font-size:16px;margin-bottom:4px;}
+.task-badges{display:flex;gap:6px;flex-wrap:wrap;}
+.badge{font-size:10.5px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;padding:3px 9px;border-radius:20px;}
+.badge-level{background:var(--blue-light);color:var(--blue);}
+.badge-comp{background:#F0EEFB;color:#5B3FBF;}
+.badge-score{background:#F1F3F6;color:var(--gray);font-family:var(--mono);}
+.status-pill{font-size:11px;font-weight:700;padding:5px 12px;border-radius:20px;white-space:nowrap;}
+.status-not{background:#F1F3F6;color:var(--gray);}
+.status-progress{background:var(--orange-bg);color:var(--orange);}
+.status-done{background:var(--green-bg);color:var(--green);}
+.task-body{padding:20px 22px;}
+.task-goal{background:var(--blue-light);border-left:3px solid var(--blue);padding:10px 14px;border-radius:6px;font-size:13px;margin-bottom:16px;color:var(--navy-2);}
+.task-goal b{color:var(--blue);}
+.subhead{font-size:11.5px;text-transform:uppercase;letter-spacing:.8px;color:var(--gray-light);font-weight:700;margin:16px 0 8px;}
+.instruction-box{
+  background:#FAFBFD;border:1px solid var(--border);border-radius:8px;padding:14px 16px;font-size:13.5px;color:var(--navy);
+}
+.instruction-box ol,.instruction-box ul{margin-left:18px;margin-top:6px;}
+.instruction-box li{margin-bottom:5px;}
+.instruction-box code{background:#EAF2FB;color:var(--blue);padding:1px 6px;border-radius:4px;font-family:var(--mono);font-size:12.5px;}
+.shortcut-tip{
+  margin-top:10px;display:flex;gap:8px;align-items:center;font-size:12px;color:var(--gray);
+}
+.kbd{
+  font-family:var(--mono);background:var(--navy);color:#fff;padding:2px 7px;border-radius:5px;font-size:11px;
+}
+
+/* dataset table */
+.data-toggle{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.table-wrap{
+  max-height:280px;overflow:auto;border:1px solid var(--border);border-radius:8px;
+}
+table.dataset{border-collapse:collapse;width:100%;font-size:12px;font-family:var(--mono);}
+table.dataset th{
+  position:sticky;top:0;background:var(--navy);color:#fff;padding:8px 10px;text-align:left;white-space:nowrap;font-size:11px;letter-spacing:.3px;
+}
+table.dataset td{padding:6px 10px;border-bottom:1px solid var(--border);white-space:nowrap;color:var(--navy-2);}
+table.dataset tr:nth-child(even) td{background:#FAFBFD;}
+table.dataset tr:hover td{background:var(--blue-light);}
+.stat-selesai{color:var(--green);font-weight:600;}
+.stat-pending{color:var(--orange);font-weight:600;}
+.stat-batal{color:var(--red);font-weight:600;}
+
+/* answer fields */
+.answer-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin-top:10px;}
+.answer-field label{display:block;font-size:12.5px;font-weight:600;color:var(--gray);margin-bottom:6px;}
+.answer-field .input-wrap{display:flex;align-items:center;border:1.5px solid var(--border);border-radius:8px;overflow:hidden;background:#fff;}
+.answer-field input{border:none;padding:10px 12px;font-size:14px;width:100%;outline:none;font-family:var(--mono);}
+.answer-field .unit{padding:0 10px;color:var(--gray-light);font-size:12px;background:#F5F7FA;height:100%;display:flex;align-items:center;}
+.answer-field .input-wrap:focus-within{border-color:var(--blue);}
+.answer-field.correct .input-wrap{border-color:var(--green);background:var(--green-bg);}
+.answer-field.wrong .input-wrap{border-color:var(--red);background:var(--red-bg);}
+
+.checklist{display:flex;flex-direction:column;gap:8px;margin-top:10px;}
+.check-item{
+  display:flex;gap:10px;align-items:flex-start;background:#FAFBFD;border:1px solid var(--border);
+  padding:10px 12px;border-radius:8px;font-size:13px;
+}
+.check-item input{margin-top:2px;width:16px;height:16px;accent-color:var(--green);flex-shrink:0;}
+.check-item.checked{background:var(--green-bg);border-color:var(--green);}
+
+.task-footer{
+  display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;
+  margin-top:18px;padding-top:16px;border-top:1px dashed var(--border);
+}
+.feedback{font-size:12.5px;font-weight:600;padding:6px 12px;border-radius:6px;display:none;}
+.feedback.show{display:inline-block;}
+.feedback.ok{background:var(--green-bg);color:var(--green);}
+.feedback.bad{background:var(--red-bg);color:var(--red);}
+
+.admin-box{
+  margin-top:16px;border:1.5px dashed var(--orange);background:var(--orange-bg);border-radius:8px;padding:12px 14px;font-size:12.5px;color:#8C5A17;display:none;
+}
+.admin-box.show{display:block;}
+.admin-box b{color:#7A3E00;}
+
+/* RESULT PAGE */
+.result-hero{
+  background:linear-gradient(135deg,var(--navy),var(--blue));
+  color:#fff;border-radius:16px;padding:36px;display:flex;justify-content:space-between;align-items:center;gap:24px;margin-bottom:26px;flex-wrap:wrap;
+}
+.score-circle{
+  width:150px;height:150px;border-radius:50%;
+  background:conic-gradient(var(--green) calc(var(--pct,0)*1%), rgba(255,255,255,0.15) 0);
+  display:flex;align-items:center;justify-content:center;position:relative;flex-shrink:0;
+}
+.score-circle::before{content:"";position:absolute;width:118px;height:118px;border-radius:50%;background:var(--navy-2);}
+.score-circle .num{position:relative;font-family:var(--display);font-size:30px;color:#fff;z-index:2;}
+.score-circle .of{position:relative;font-size:11px;color:#B9CDE8;z-index:2;}
+.result-meta{flex:1;min-width:240px;}
+.result-meta h2{color:#fff;font-size:24px;margin-bottom:6px;}
+.result-badge{display:inline-block;padding:6px 16px;border-radius:20px;font-weight:700;font-size:13px;margin-top:8px;}
+.result-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;text-align:left;margin-top:16px;}
+.result-grid div{background:rgba(255,255,255,0.08);padding:10px 12px;border-radius:8px;}
+.result-grid .k{font-size:10.5px;color:#B9CDE8;text-transform:uppercase;letter-spacing:.5px;}
+.result-grid .v{font-size:14.5px;font-weight:700;margin-top:2px;}
+
+.comp-table{width:100%;border-collapse:collapse;background:#fff;border-radius:10px;overflow:hidden;border:1px solid var(--border);}
+.comp-table th{background:var(--navy);color:#fff;padding:10px 14px;font-size:12px;text-align:left;}
+.comp-table td{padding:10px 14px;border-bottom:1px solid var(--border);font-size:13px;}
+.comp-bar-bg{background:#E7ECF2;border-radius:6px;height:9px;width:140px;overflow:hidden;}
+.comp-bar-bg > div{height:100%;border-radius:6px;}
+
+.task-list-mini{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px;}
+.mini-row{display:flex;justify-content:space-between;align-items:center;background:#fff;border:1px solid var(--border);padding:8px 12px;border-radius:7px;font-size:12.5px;}
+
+/* NOTES + CALC */
+.floating-btns{position:fixed;bottom:22px;right:22px;display:flex;flex-direction:column;gap:10px;z-index:60;}
+.fab{
+  width:48px;height:48px;border-radius:50%;background:var(--blue);color:#fff;border:none;
+  box-shadow:0 6px 18px rgba(30,95,168,0.4);font-size:19px;display:flex;align-items:center;justify-content:center;
+}
+.fab.notes{background:var(--navy);}
+.panel-float{
+  position:fixed;bottom:84px;right:22px;width:300px;background:#fff;border-radius:12px;
+  box-shadow:0 12px 40px rgba(0,0,0,0.2);border:1px solid var(--border);z-index:60;display:none;overflow:hidden;
+}
+.panel-float.show{display:block;}
+.panel-float-head{background:var(--navy);color:#fff;padding:12px 16px;font-size:13px;font-weight:700;display:flex;justify-content:space-between;}
+.panel-float-head span{cursor:pointer;opacity:.8;}
+.panel-float-body{padding:14px 16px;}
+#notesArea{width:100%;height:160px;border:1px solid var(--border);border-radius:8px;padding:10px;font-size:12.5px;resize:vertical;outline:none;}
+.calc-display{background:#0B2545;color:#fff;font-family:var(--mono);font-size:22px;text-align:right;padding:12px;border-radius:8px;margin-bottom:10px;}
+.calc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;}
+.calc-grid button{padding:10px 0;border:1px solid var(--border);background:#F7F9FC;border-radius:6px;font-size:14px;}
+.calc-grid button.op{background:var(--blue-light);color:var(--blue);font-weight:700;}
+.calc-grid button.eq{background:var(--blue);color:#fff;grid-column:span 2;}
+.calc-grid button.clr{background:var(--red-bg);color:var(--red);}
+
+/* MODAL */
+.modal-overlay{
+  position:fixed;inset:0;background:rgba(8,20,40,0.55);display:none;align-items:center;justify-content:center;z-index:100;padding:16px;
+}
+.modal-overlay.show{display:flex;}
+.modal{background:#fff;border-radius:14px;max-width:440px;width:100%;padding:26px 28px;box-shadow:0 24px 60px rgba(0,0,0,0.3);}
+.modal h3{font-size:17px;margin-bottom:10px;}
+.modal p{font-size:13.5px;color:var(--gray);margin-bottom:20px;}
+.modal-actions{display:flex;gap:10px;justify-content:flex-end;}
+
+/* print */
+@media print{
+  body *{visibility:hidden;}
+  #printArea, #printArea *{visibility:visible;}
+  #printArea{position:absolute;top:0;left:0;width:100%;}
+  .floating-btns,.topbar,.sidebar{display:none !important;}
+}
+
+@media (max-width:1080px){
+  .dash-grid{grid-template-columns:repeat(2,1fr);}
+  .level-cards{grid-template-columns:1fr;}
+  .result-grid{grid-template-columns:1fr 1fr;}
+  .task-list-mini{grid-template-columns:1fr;}
+}
+@media (max-width:860px){
+  #app{grid-template-columns:1fr;}
+  .sidebar{position:relative;top:0;height:auto;flex-direction:row;flex-wrap:wrap;}
+  .topbar-mid{display:none;}
+  .info-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- ===================== WELCOME SCREEN ===================== -->
+<div id="screen-welcome">
+  <div class="welcome-card">
+    <div class="welcome-head">
+      <div class="eyebrow">Corporate Learning &amp; Development</div>
+      <h1>Practical Excel Assessment</h1>
+      <p>Basic to Intermediate Excel Competency Assessment</p>
+    </div>
+    <div class="welcome-body">
+      <h3>Data Peserta</h3>
+      <div class="info-grid">
+        <div class="field">
+          <label>Nama Peserta</label>
+          <input type="text" id="inpName" placeholder="Masukkan nama lengkap">
+        </div>
+        <div class="field">
+          <label>Employee ID</label>
+          <input type="text" id="inpEmpId" placeholder="Contoh: EMP0231">
+        </div>
+        <div class="field">
+          <label>Unit / Divisi</label>
+          <input type="text" id="inpDivisi" placeholder="Contoh: Finance &amp; Accounting">
+        </div>
+        <div class="field">
+          <label>Tanggal Assessment</label>
+          <input type="text" id="inpTanggal" disabled>
+        </div>
+      </div>
+
+      <h3>Instruksi Pengerjaan</h3>
+      <ul class="instruction-list">
+        <li><b>01</b> Assessment terdiri dari <b>15 task praktik</b> yang terbagi ke dalam 3 level: Basic, Basic–Intermediate, dan Intermediate, ditutup dengan 1 Capstone Task.</li>
+        <li><b>02</b> Waktu pengerjaan adalah <b>60 menit</b>. Timer akan berjalan otomatis setelah Anda menekan tombol "Mulai Assessment".</li>
+        <li><b>03</b> Sebagian task memiliki jawaban objektif yang divalidasi otomatis oleh sistem. Sebagian task lain (formatting, pivot, data validation) menggunakan mekanisme <b>Self Verification</b> — kerjakan langsung di Microsoft Excel, lalu centang checklist yang tersedia.</li>
+        <li><b>04</b> Dataset transaksi dan master data disediakan langsung pada setiap task. Gunakan Microsoft Excel Anda sendiri untuk mengerjakan, lalu masukkan hasil akhirnya ke sistem.</li>
+        <li><b>05</b> Gunakan shortcut keyboard Excel bila relevan untuk meningkatkan efisiensi pengerjaan Anda.</li>
+        <li><b>06</b> Progress Anda akan tersimpan selama sesi browser ini berlangsung. Tekan "Submit Assessment" bila seluruh task telah dikerjakan.</li>
+      </ul>
+
+      <div class="checkbox-row">
+        <input type="checkbox" id="inpAgree">
+        <label for="inpAgree">Saya telah membaca dan memahami instruksi pengerjaan di atas.</label>
+      </div>
+
+      <button class="btn btn-primary btn-full" id="btnStartAssessment" disabled>Mulai Assessment →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== APP SHELL ===================== -->
+<div id="app">
+  <div class="topbar">
+    <div class="topbar-left">
+      <div class="brand-mark">PX</div>
+      <div class="brand">
+        <b>Practical Excel Assessment</b>
+        <span>Basic to Intermediate</span>
+      </div>
+    </div>
+    <div class="topbar-mid">
+      <div class="participant-chip">Peserta: <b id="chipName">-</b></div>
+      <div class="participant-chip">ID: <b id="chipId">-</b></div>
+      <div class="timer-box" id="timerBox">⏱ <span id="timerText">60:00</span></div>
+    </div>
+    <div class="topbar-right">
+      <button class="icon-btn" id="btnAdmin">🔒 Admin Mode</button>
+      <button class="icon-btn" id="btnSubmitTop">✅ Submit</button>
+    </div>
+  </div>
+
+  <div class="sidebar">
+    <button class="nav-item active" data-nav="overview">📊 Overview</button>
+    <div class="nav-label">Assessment</div>
+    <button class="nav-item" data-nav="level1">Basic <span class="count" id="cnt-level1">0/5</span></button>
+    <button class="nav-item" data-nav="level2">Basic–Intermediate <span class="count" id="cnt-level2">0/5</span></button>
+    <button class="nav-item" data-nav="level3">Intermediate <span class="count" id="cnt-level3">0/4</span></button>
+    <button class="nav-item" data-nav="capstone">Capstone <span class="count" id="cnt-capstone">0/1</span></button>
+    <div class="nav-label">Hasil</div>
+    <button class="nav-item" data-nav="result">🏁 Result</button>
+
+    <div class="sidebar-progress">
+      <div class="lbl">Progress Keseluruhan</div>
+      <div class="pct" id="sideProgressPct">0%</div>
+      <div class="progressbar"><div id="sideProgressBar" style="width:0%"></div></div>
+    </div>
+  </div>
+
+  <div class="main">
+
+    <!-- OVERVIEW -->
+    <section class="section active" id="sec-overview">
+      <div class="section-head">
+        <h2>Overview Assessment</h2>
+        <p>Ringkasan progres pengerjaan dan dataset yang digunakan sepanjang assessment ini.</p>
+      </div>
+
+      <div class="dash-grid">
+        <div class="dash-card"><div class="lbl">Total Task</div><div class="val">15</div><div class="sub">3 level + 1 capstone</div></div>
+        <div class="dash-card"><div class="lbl">Task Selesai</div><div class="val blue" id="dashCompleted">0</div><div class="sub">dari 15 task</div></div>
+        <div class="dash-card"><div class="lbl">Progress</div><div class="val green" id="dashProgress">0%</div><div class="sub" id="dashProgressSub">belum dimulai</div></div>
+        <div class="dash-card"><div class="lbl">Skor Saat Ini</div><div class="val orange" id="dashScore">0</div><div class="sub">dari 100 poin</div></div>
+        <div class="dash-card"><div class="lbl">Sisa Waktu</div><div class="val" id="dashTime">60:00</div><div class="sub">dari 60 menit</div></div>
+      </div>
+
+      <div class="info-banner">
+        <div>
+          <h3>Dataset Utama: Transaksi &amp; Kinerja Cabang PT Nusantara Distribusi</h3>
+          <p>Seluruh task pada assessment ini menggunakan satu dataset transaksi konsisten (70 baris) beserta Master Data Cabang dan Master Data Produk. Buka dan salin dataset ini ke Microsoft Excel Anda untuk mulai mengerjakan.</p>
+        </div>
+        <button class="btn btn-outline" style="background:#fff" id="btnJumpDataset">Lihat Dataset Lengkap ↓</button>
+      </div>
+
+      <div class="level-cards">
+        <div class="level-card">
+          <span class="tag tag-basic">Level 1 · Basic</span>
+          <h4>Fundamental Excel</h4>
+          <p>Data entry, formatting, SUM/MIN/MAX/AVERAGE/COUNT, sort &amp; filter, shortcut dasar.</p>
+          <div class="meta"><span>5 Task</span><span>25 Poin</span></div>
+        </div>
+        <div class="level-card">
+          <span class="tag tag-mid">Level 2 · Basic–Intermediate</span>
+          <h4>Pengolahan &amp; Analisis Data</h4>
+          <p>IF, SUMIF/SUMIFS, COUNTIF/COUNTIFS, AVERAGEIF/AVERAGEIFS, Conditional Formatting, Data Validation.</p>
+          <div class="meta"><span>5 Task</span><span>35 Poin</span></div>
+        </div>
+        <div class="level-card">
+          <span class="tag tag-adv">Level 3 · Intermediate</span>
+          <h4>Insight dari Dataset</h4>
+          <p>XLOOKUP/VLOOKUP, INDEX+MATCH, PivotTable, PivotChart, Grouping, Slicer.</p>
+          <div class="meta"><span>4 Task + Capstone</span><span>40 Poin</span></div>
+        </div>
+      </div>
+
+      <div class="subhead" id="datasetAnchor">Dataset Transaksi (Raw Data)</div>
+      <div class="table-wrap" style="max-height:360px">
+        <table class="dataset" id="mainDatasetTable"></table>
+      </div>
+
+      <div class="subhead">Master Data Cabang</div>
+      <div class="table-wrap" style="max-height:220px">
+        <table class="dataset" id="branchDatasetTable"></table>
+      </div>
+
+      <div class="subhead">Master Data Produk</div>
+      <div class="table-wrap" style="max-height:220px">
+        <table class="dataset" id="productDatasetTable"></table>
+      </div>
+    </section>
+
+    <!-- LEVEL SECTIONS -->
+    <section class="section" id="sec-level1">
+      <div class="section-head">
+        <h2>Level 1 — Basic</h2>
+        <p>Mengukur kemampuan fundamental Excel: input data, formatting, formula dasar, sort &amp; filter.</p>
+      </div>
+      <div id="tasksLevel1"></div>
+    </section>
+
+    <section class="section" id="sec-level2">
+      <div class="section-head">
+        <h2>Level 2 — Basic to Intermediate</h2>
+        <p>Mengukur kemampuan pengolahan dan analisis data menggunakan fungsi logika dan kondisional.</p>
+      </div>
+      <div id="tasksLevel2"></div>
+    </section>
+
+    <section class="section" id="sec-level3">
+      <div class="section-head">
+        <h2>Level 3 — Intermediate</h2>
+        <p>Mengukur kemampuan menghasilkan informasi dari dataset menggunakan Lookup, PivotTable, dan PivotChart.</p>
+      </div>
+      <div id="tasksLevel3"></div>
+    </section>
+
+    <section class="section" id="sec-capstone">
+      <div class="section-head">
+        <h2>Capstone Assessment</h2>
+        <p>Task akhir yang menggabungkan seluruh kompetensi menjadi satu Mini Business Report.</p>
+      </div>
+      <div id="tasksCapstone"></div>
+    </section>
+
+    <!-- RESULT -->
+    <section class="section" id="sec-result">
+      <div id="printArea">
+        <div class="section-head">
+          <h2>Assessment Result</h2>
+          <p>Ringkasan hasil pengerjaan practical Excel assessment Anda.</p>
+        </div>
+
+        <div class="result-hero">
+          <div class="score-circle" id="scoreCircle" style="--pct:0">
+            <div class="num" id="resultScoreNum">0</div>
+            <div class="of">/ 100</div>
+          </div>
+          <div class="result-meta">
+            <h2 id="resultLevel">Belum Diselesaikan</h2>
+            <div class="result-badge" id="resultBadge" style="background:#fff2;color:#fff">Menunggu Submit</div>
+            <div class="result-grid">
+              <div><div class="k">Nama Peserta</div><div class="v" id="resName">-</div></div>
+              <div><div class="k">Employee ID</div><div class="v" id="resId">-</div></div>
+              <div><div class="k">Waktu Pengerjaan</div><div class="v" id="resTime">-</div></div>
+              <div><div class="k">Task Selesai</div><div class="v" id="resTaskDone">0 / 15</div></div>
+            </div>
+            <div id="syncStatus" style="font-size:12px;color:#C9DAF0;margin-top:14px;">Menunggu submit...</div>
+          </div>
+        </div>
+
+        <div class="subhead">Hasil per Kompetensi</div>
+        <table class="comp-table" id="compTable"></table>
+
+        <div class="subhead">Detail Task</div>
+        <div class="task-list-mini" id="taskListMini"></div>
+      </div>
+
+      <div style="display:flex;gap:12px;margin-top:24px;">
+        <button class="btn btn-primary" id="btnPrint">🖨 Print Result</button>
+        <button class="btn btn-outline" id="btnReset">↺ Reset Assessment</button>
+      </div>
+    </section>
+
+  </div>
+</div>
+
+<!-- FLOATING BUTTONS -->
+<div class="floating-btns">
+  <button class="fab notes" id="fabNotes" title="Candidate Notes">📝</button>
+  <button class="fab" id="fabCalc" title="Calculator">🧮</button>
+</div>
+
+<div class="panel-float" id="panelNotes">
+  <div class="panel-float-head"><span>Candidate Notes</span><span data-close="panelNotes">✕</span></div>
+  <div class="panel-float-body">
+    <textarea id="notesArea" placeholder="Catat hal-hal penting selama pengerjaan di sini..."></textarea>
+  </div>
+</div>
+
+<div class="panel-float" id="panelCalc">
+  <div class="panel-float-head"><span>Calculator</span><span data-close="panelCalc">✕</span></div>
+  <div class="panel-float-body">
+    <div class="calc-display" id="calcDisplay">0</div>
+    <div class="calc-grid" id="calcGrid"></div>
+  </div>
+</div>
+
+<!-- MODALS -->
+<div class="modal-overlay" id="modalConfirmStart">
+  <div class="modal">
+    <h3>Mulai Assessment?</h3>
+    <p>Timer 60 menit akan mulai berjalan setelah Anda menekan tombol "Ya, Mulai". Pastikan Anda siap sebelum melanjutkan.</p>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" data-close-modal="modalConfirmStart">Batal</button>
+      <button class="btn btn-primary" id="btnConfirmStart">Ya, Mulai</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modalConfirmSubmit">
+  <div class="modal">
+    <h3>Submit Assessment?</h3>
+    <p id="submitWarnText">Anda telah menyelesaikan sebagian task. Setelah submit, jawaban tidak dapat diubah kembali. Lanjutkan?</p>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" data-close-modal="modalConfirmSubmit">Batal, Kembali Mengerjakan</button>
+      <button class="btn btn-primary" id="btnConfirmSubmit">Ya, Submit Sekarang</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modalAdmin">
+  <div class="modal">
+    <h3>Trainer / Admin Mode</h3>
+    <p>Masukkan passcode trainer untuk menampilkan Answer Key pada setiap task.</p>
+    <div class="field" style="margin-bottom:16px">
+      <input type="password" id="adminPass" placeholder="Passcode">
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" data-close-modal="modalAdmin">Batal</button>
+      <button class="btn btn-primary" id="btnConfirmAdmin">Masuk</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+"use strict";
+
+/* =========================================================
+   0. CONFIG — Hubungkan ke Google Sheet (via Google Apps Script)
+   =========================================================
+   1. Buat Google Sheet baru.
+   2. Buka Extensions > Apps Script, hapus isi default, tempel isi file code.gs.
+   3. Deploy > New deployment > Web app. Execute as: Me. Who has access: Anyone.
+   4. Salin "Web app URL" hasil deploy, tempel di GOOGLE_SHEET_API_URL di bawah ini.
+   5. Simpan file ini, lalu re-upload/push ke GitHub (GitHub Pages).
+   Selengkapnya lihat README.md pada repository.
+*/
+const CONFIG = {
+  GOOGLE_SHEET_API_URL: 'https://script.google.com/macros/s/AKfycbz90aT7XlMIPOAnu2bwOSZ9NHqfaCJ8_BR2DcTbzWBm_rjPIwGg0iIo9PwYm-KJl2-m/exec'
+};
+
+/* =========================================================
+   1. SEEDED RANDOM & DATASET GENERATION
+   ========================================================= */
+function mulberry32(seed){
+  return function(){
+    seed |= 0; seed = (seed + 0x6D2B79F5) | 0;
+    let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+const rng = mulberry32(87231);
+function pick(arr){ return arr[Math.floor(rng()*arr.length)]; }
+function randInt(min,max){ return Math.floor(rng()*(max-min+1))+min; }
+
+const EMPLOYEES = [
+  ["EMP001","Andi Saputra"],["EMP002","Budi Hartono"],["EMP003","Citra Ayu Lestari"],
+  ["EMP004","Dewi Anggraini"],["EMP005","Eka Prasetyo"],["EMP006","Fajar Nugroho"],
+  ["EMP007","Gita Permata"],["EMP008","Hendra Wijaya"],["EMP009","Indah Puspita"],
+  ["EMP010","Joko Susilo"],["EMP011","Kartika Sari"],["EMP012","Lukman Hakim"],
+  ["EMP013","Maya Kusuma"],["EMP014","Nanda Pratama"],["EMP015","Oscar Simanjuntak"],
+  ["EMP016","Putri Rahayu"],["EMP017","Rian Setiawan"],["EMP018","Sari Wulandari"],
+  ["EMP019","Tono Firmansyah"],["EMP020","Umi Kalsum"],["EMP021","Vina Amelia"],
+  ["EMP022","Wawan Kurniawan"],["EMP023","Yusuf Ramadhan"],["EMP024","Zahra Fauziah"],
+  ["EMP025","Bayu Aditya"]
+];
+
+const BRANCHES = [
+  ["BR01","Jakarta Pusat","Jakarta","Area 1","Rudi Hartanto"],
+  ["BR02","Jakarta Selatan","Jakarta","Area 1","Siti Nurhaliza"],
+  ["BR03","Jakarta Barat","Jakarta","Area 1","Agus Salim"],
+  ["BR04","Surabaya Timur","Surabaya","Area 2","Ratna Dewi"],
+  ["BR05","Surabaya Barat","Surabaya","Area 2","Bambang Sutrisno"],
+  ["BR06","Surabaya Pusat","Surabaya","Area 2","Yuni Astuti"],
+  ["BR07","Bandung Kota","Bandung","Area 1","Dedi Kurniawan"],
+  ["BR08","Bandung Barat","Bandung","Area 1","Fitriani"],
+  ["BR09","Bandung Timur","Bandung","Area 1","Hasan Basri"],
+  ["BR10","Medan Kota","Medan","Area 3","Lina Marlina"],
+  ["BR11","Medan Baru","Medan","Area 3","Taufik Hidayat"],
+  ["BR12","Medan Selatan","Medan","Area 3","Nurul Aini"],
+  ["BR13","Makassar Pusat","Makassar","Area 3","Irwan Setiabudi"],
+  ["BR14","Makassar Timur","Makassar","Area 3","Melati Sukma"],
+  ["BR15","Makassar Barat","Makassar","Area 3","Arif Rahman"]
+];
+
+const PRODUCTS = [
+  ["P01","Laptop Bisnis","Elektronik"],
+  ["P02","Printer Kantor","Elektronik"],
+  ["P03","Scanner Dokumen","Elektronik"],
+  ["P04","Proyektor","Elektronik"],
+  ["P05","Telepon PBX","Elektronik"],
+  ["P06","Meja Kerja","Furniture"],
+  ["P07","Kursi Ergonomis","Furniture"],
+  ["P08","Rak Arsip","Furniture"],
+  ["P09","AC Split","Office Equipment"],
+  ["P10","Mesin Fotokopi","Office Equipment"]
+];
+
+const MONTHS_ID = ["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
+const STATUS_POOL = ["Selesai","Selesai","Selesai","Pending","Pending","Batal"];
+
+function branchByCode(code){ return BRANCHES.find(b=>b[0]===code); }
+function productByCode(code){ return PRODUCTS.find(p=>p[0]===code); }
+
+// each employee has a fixed home branch (cycled)
+const EMP_BRANCH = {};
+EMPLOYEES.forEach((e,i)=>{ EMP_BRANCH[e[0]] = BRANCHES[i % BRANCHES.length][0]; });
+
+const TRANSACTIONS = [];
+for(let i=0;i<70;i++){
+  const emp = pick(EMPLOYEES);
+  const branchCode = EMP_BRANCH[emp[0]];
+  const branch = branchByCode(branchCode);
+  const product = pick(PRODUCTS);
+  const month = randInt(0,11);
+  const day = randInt(1,27);
+  const amount = randInt(30,470) * 50000; // 1,500,000 - 23,500,000
+  const status = pick(STATUS_POOL);
+  const score = randInt(40,100);
+  TRANSACTIONS.push({
+    no:i+1,
+    empId:emp[0], empName:emp[1],
+    branchCode:branchCode, region:branch[2],
+    category:product[2], productCode:product[0], productName:product[1],
+    date:new Date(2024,month,day),
+    amount:amount, status:status, score:score
+  });
+}
+function fmtDate(d){
+  const dd=String(d.getDate()).padStart(2,'0');
+  const mm=String(d.getMonth()+1).padStart(2,'0');
+  return dd+"/"+mm+"/"+d.getFullYear();
+}
+function fmtCurrency(n){ return "Rp " + n.toLocaleString('id-ID'); }
+function fmtNum(n){ return n.toLocaleString('id-ID'); }
+
+/* =========================================================
+   2. RENDER DATASET TABLES
+   ========================================================= */
+function renderMainTable(){
+  const t = document.getElementById('mainDatasetTable');
+  let head = "<thead><tr><th>No</th><th>Employee ID</th><th>Employee Name</th><th>Branch Code</th>"+
+    "<th>Region</th><th>Category</th><th>Product Code</th><th>Product</th><th>Transaction Date</th>"+
+    "<th>Transaction Amount</th><th>Status</th><th>Score</th></tr></thead>";
+  let body = "<tbody>";
+  TRANSACTIONS.forEach(r=>{
+    const statusClass = r.status==='Selesai'?'stat-selesai':(r.status==='Pending'?'stat-pending':'stat-batal');
+    body += "<tr><td>"+r.no+"</td><td>"+r.empId+"</td><td>"+r.empName+"</td><td>"+r.branchCode+"</td>"+
+      "<td>"+r.region+"</td><td>"+r.category+"</td><td>"+r.productCode+"</td><td>"+r.productName+"</td>"+
+      "<td>"+fmtDate(r.date)+"</td><td>"+fmtCurrency(r.amount)+"</td><td class='"+statusClass+"'>"+r.status+"</td><td>"+r.score+"</td></tr>";
+  });
+  body += "</tbody>";
+  t.innerHTML = head+body;
+}
+function renderBranchTable(){
+  const t = document.getElementById('branchDatasetTable');
+  let head = "<thead><tr><th>Branch Code</th><th>Branch Name</th><th>Region</th><th>Area</th><th>Manager</th></tr></thead>";
+  let body = "<tbody>"+BRANCHES.map(b=>"<tr><td>"+b[0]+"</td><td>"+b[1]+"</td><td>"+b[2]+"</td><td>"+b[3]+"</td><td>"+b[4]+"</td></tr>").join("")+"</tbody>";
+  t.innerHTML = head+body;
+}
+function renderProductTable(){
+  const t = document.getElementById('productDatasetTable');
+  let head = "<thead><tr><th>Product Code</th><th>Product Name</th><th>Category</th></tr></thead>";
+  let body = "<tbody>"+PRODUCTS.map(p=>"<tr><td>"+p[0]+"</td><td>"+p[1]+"</td><td>"+p[2]+"</td></tr>").join("")+"</tbody>";
+  t.innerHTML = head+body;
+}
+
+/* =========================================================
+   3. COMPUTE ANSWER KEY FROM DATASET (always in sync with data)
+   ========================================================= */
+const sum = arr => arr.reduce((a,b)=>a+b,0);
+
+const totalAmount = sum(TRANSACTIONS.map(t=>t.amount));
+const countTx = TRANSACTIONS.length;
+const minAmount = Math.min(...TRANSACTIONS.map(t=>t.amount));
+const maxAmount = Math.max(...TRANSACTIONS.map(t=>t.amount));
+const avgAmount = Math.round(totalAmount/countTx);
+
+// T5: filter region Jakarta, sort desc, first row employee name
+const jakartaSorted = TRANSACTIONS.filter(t=>t.region==='Jakarta').sort((a,b)=>b.amount-a.amount);
+const t5Answer = jakartaSorted[0].empName;
+
+// T6: IF - count Score>=70 => LULUS
+const lulusCount = TRANSACTIONS.filter(t=>t.score>=70).length;
+
+// T7: SUMIF Jakarta, SUMIFS Jakarta+Selesai
+const sumifJakarta = sum(TRANSACTIONS.filter(t=>t.region==='Jakarta').map(t=>t.amount));
+const sumifsJakartaSelesai = sum(TRANSACTIONS.filter(t=>t.region==='Jakarta' && t.status==='Selesai').map(t=>t.amount));
+
+// T8: COUNTIFS Surabaya+Selesai, AVERAGEIF score of Selesai
+const countifsSurabayaSelesai = TRANSACTIONS.filter(t=>t.region==='Surabaya' && t.status==='Selesai').length;
+const selesaiRows = TRANSACTIONS.filter(t=>t.status==='Selesai');
+const averageifScoreSelesai = Math.round(sum(selesaiRows.map(t=>t.score))/selesaiRows.length);
+
+// T9: count Score>=80 "Tinggi"
+const tinggiCount = TRANSACTIONS.filter(t=>t.score>=80).length;
+
+// T10: dropdown values - fixed by instruction (Lulus / Tidak Lulus / Belum Dinilai)
+
+// T11: Lookup target = row index 5 (1-based) => transactions[4]
+const t11Row = TRANSACTIONS[4];
+const t11Branch = branchByCode(t11Row.branchCode);
+const t11Answer = { branchName:t11Branch[1], region:t11Branch[2] };
+
+// T12: INDEX+MATCH target = row index 12 (1-based) => transactions[11]
+const t12Row = TRANSACTIONS[11];
+const t12Product = productByCode(t12Row.productCode);
+const t12Answer = { productName:t12Product[1], category:t12Product[2] };
+
+// T13: PivotTable - region with highest total amount
+const regionTotals = {};
+TRANSACTIONS.forEach(t=>{ regionTotals[t.region]=(regionTotals[t.region]||0)+t.amount; });
+let topRegion = null, topRegionAmt = -1;
+Object.keys(regionTotals).forEach(r=>{ if(regionTotals[r]>topRegionAmt){topRegion=r; topRegionAmt=regionTotals[r];} });
+
+// T14: month with most transactions
+const monthCounts = new Array(12).fill(0);
+TRANSACTIONS.forEach(t=>{ monthCounts[t.date.getMonth()]++; });
+let topMonthIdx=0, topMonthCount=-1;
+monthCounts.forEach((c,i)=>{ if(c>topMonthCount){topMonthCount=c; topMonthIdx=i;} });
+const topMonthName = MONTHS_ID[topMonthIdx];
+
+// T15 capstone cross-check values (reuse totalAmount, topRegion)
+const bestBranch = (()=>{
+  const bt={}; TRANSACTIONS.forEach(t=>{bt[t.branchCode]=(bt[t.branchCode]||0)+t.amount;});
+  let bb=null,ba=-1; Object.keys(bt).forEach(k=>{if(bt[k]>ba){ba=bt[k];bb=k;}});
+  return branchByCode(bb)[1];
+})();
+
+/* =========================================================
+   4. TASK DEFINITIONS
+   ========================================================= */
+// helper to build a numeric field
+function numField(id,label,expected,tolerance,unit){
+  return {id,label,type:'number',expected,tolerance:tolerance||0,unit:unit||''};
+}
+function textField(id,label,expected){
+  return {id,label,type:'text',expected};
+}
+
+const TASKS = [
+  // ---------------- LEVEL 1 : BASIC ----------------
+  {
+    id:'t1', level:'level1', num:1, weight:5,
+    title:'Data Cleaning & Formatting',
+    competency:'Data Management',
+    goal:'Merapikan dataset transaksi mentah agar siap digunakan sebagai laporan kerja.',
+    instructions:`
+      <ol>
+        <li>Salin <b>Dataset Transaksi</b> pada halaman Overview ke sheet Excel baru.</li>
+        <li>Rapikan header kolom (bold, freeze row pertama menggunakan <code>Alt, W, F</code>).</li>
+        <li>Format kolom <code>Transaction Date</code> menjadi format tanggal Indonesia (DD/MM/YYYY).</li>
+        <li>Format kolom <code>Transaction Amount</code> menjadi format Currency (Rp).</li>
+        <li>Ubah range data menjadi Table menggunakan <code>Ctrl+T</code>, lalu aktifkan filter otomatis.</li>
+        <li>Rapikan lebar kolom menggunakan Auto-Fit Column Width (<code>Alt, H, O, I</code>).</li>
+      </ol>`,
+    shortcutTip:'Gunakan Ctrl+T untuk mengubah range menjadi Table secara instan.',
+    checklist:[
+      'Header sudah dirapikan dan di-bold, baris pertama sudah di-freeze',
+      'Kolom Transaction Date sudah menggunakan format tanggal DD/MM/YYYY',
+      'Kolom Transaction Amount sudah menggunakan format Currency (Rp)',
+      'Data sudah diubah menjadi Table (Ctrl+T) dengan filter aktif',
+      'Lebar seluruh kolom sudah dirapikan (Auto-Fit Column Width)'
+    ],
+    fields:[]
+  },
+  {
+    id:'t2', level:'level1', num:2, weight:5,
+    title:'Basic Calculation — Total & Jumlah Transaksi',
+    competency:'Basic Excel',
+    goal:'Menghitung ringkasan dasar dari seluruh transaksi menggunakan SUM dan COUNT.',
+    instructions:`
+      <ol>
+        <li>Gunakan fungsi <code>=SUM(range Transaction Amount)</code> untuk menghitung total seluruh nilai transaksi.</li>
+        <li>Gunakan fungsi <code>=COUNT(range Transaction Amount)</code> untuk menghitung jumlah transaksi yang tercatat.</li>
+      </ol>
+      <p>Masukkan hasil perhitungan Anda pada kolom jawaban di bawah.</p>`,
+    shortcutTip:'Tekan Ctrl+Arrow Down untuk langsung meloncat ke baris terakhir data sebelum menulis formula SUM.',
+    fields:[
+      numField('sumTotal','Total Transaction Amount (SUM)', totalAmount, 0, 'Rp'),
+      numField('countTotal','Jumlah Transaksi (COUNT)', countTx, 0, 'baris')
+    ]
+  },
+  {
+    id:'t3', level:'level1', num:3, weight:5,
+    title:'MIN & MAX Analysis',
+    competency:'Basic Excel',
+    goal:'Mengidentifikasi nilai transaksi terendah dan tertinggi dalam dataset.',
+    instructions:`
+      <ol>
+        <li>Gunakan <code>=MIN(range Transaction Amount)</code> untuk menemukan transaksi dengan nilai terendah.</li>
+        <li>Gunakan <code>=MAX(range Transaction Amount)</code> untuk menemukan transaksi dengan nilai tertinggi.</li>
+      </ol>`,
+    shortcutTip:'Tekan F2 untuk mengedit formula secara langsung di dalam sel tanpa menghapus isi sebelumnya.',
+    fields:[
+      numField('minVal','Transaksi Minimum (MIN)', minAmount, 0, 'Rp'),
+      numField('maxVal','Transaksi Maksimum (MAX)', maxAmount, 0, 'Rp')
+    ]
+  },
+  {
+    id:'t4', level:'level1', num:4, weight:5,
+    title:'AVERAGE Analysis',
+    competency:'Basic Excel',
+    goal:'Menghitung rata-rata nilai transaksi seluruh cabang.',
+    instructions:`
+      <ol>
+        <li>Gunakan <code>=AVERAGE(range Transaction Amount)</code> untuk menghitung rata-rata nilai transaksi.</li>
+        <li>Bulatkan hasil ke bilangan bulat terdekat (boleh menggunakan <code>ROUND</code>).</li>
+      </ol>`,
+    shortcutTip:'Gunakan Alt, H untuk cepat mengakses tab Home saat mengubah format angka.',
+    fields:[
+      numField('avgVal','Rata-Rata Transaksi (AVERAGE)', avgAmount, Math.max(1,Math.round(avgAmount*0.005)), 'Rp')
+    ]
+  },
+  {
+    id:'t5', level:'level1', num:5, weight:5,
+    title:'Sorting & Filtering',
+    competency:'Data Management',
+    goal:'Melatih kemampuan menyaring dan mengurutkan data transaksi berdasarkan kriteria bisnis.',
+    instructions:`
+      <ol>
+        <li>Aktifkan filter pada tabel (jika belum), gunakan <code>Alt, A, T</code>.</li>
+        <li>Filter data agar hanya menampilkan <code>Region = Jakarta</code>.</li>
+        <li>Urutkan hasil filter berdasarkan <code>Transaction Amount</code> dari yang <b>terbesar ke terkecil</b> (Sort Descending).</li>
+        <li>Lihat baris paling atas setelah data difilter dan diurutkan, lalu catat nama pegawainya (Employee Name).</li>
+      </ol>`,
+    shortcutTip:'Gunakan Ctrl+Shift+L untuk mengaktifkan/menonaktifkan filter dengan cepat.',
+    checklist:[
+      'Filter sudah diaktifkan pada tabel data',
+      'Data sudah difilter untuk Region = Jakarta',
+      'Data hasil filter sudah diurutkan Descending berdasarkan Transaction Amount'
+    ],
+    fields:[
+      textField('t5Employee','Employee Name pada baris teratas setelah filter & sort', t5Answer)
+    ]
+  },
+
+  // ---------------- LEVEL 2 : BASIC-INTERMEDIATE ----------------
+  {
+    id:'t6', level:'level2', num:6, weight:7,
+    title:'Logical Analysis — Status Kelulusan (IF)',
+    competency:'Logical & Conditional Analysis',
+    goal:'Menentukan status kelulusan pegawai berdasarkan kriteria Score menggunakan fungsi IF.',
+    instructions:`
+      <p><b>Business requirement:</b> Jika <code>Score ≥ 70</code>, maka status = "LULUS". Jika <code>Score &lt; 70</code>, maka status = "TIDAK LULUS".</p>
+      <ol>
+        <li>Buat kolom baru <code>Status Kelulusan</code> di samping kolom Score.</li>
+        <li>Gunakan formula: <code>=IF(Score&gt;=70,"LULUS","TIDAK LULUS")</code> dan salin ke seluruh baris.</li>
+        <li>Hitung berapa banyak baris yang berstatus "LULUS" (boleh menggunakan COUNTIF pada kolom hasil IF).</li>
+      </ol>`,
+    shortcutTip:'Gunakan Ctrl+D untuk menyalin formula ke bawah dengan cepat setelah menulis formula IF pada baris pertama.',
+    fields:[
+      numField('lulusCount','Jumlah pegawai dengan status LULUS (Score ≥ 70)', lulusCount, 0, 'orang')
+    ]
+  },
+  {
+    id:'t7', level:'level2', num:7, weight:10,
+    title:'Conditional Calculation — SUMIF & SUMIFS',
+    competency:'Formula & Function',
+    goal:'Menjawab pertanyaan bisnis mengenai total transaksi berdasarkan kriteria tertentu.',
+    instructions:`
+      <p><b>Business question 1:</b> Berapa total <code>Transaction Amount</code> untuk Region "Jakarta"?</p>
+      <p style="margin-top:8px"><b>Business question 2:</b> Berapa total <code>Transaction Amount</code> untuk Region "Jakarta" yang berstatus "Selesai"?</p>
+      <ol style="margin-top:10px">
+        <li>Gunakan <code>=SUMIF(range_region,"Jakarta",range_amount)</code> untuk pertanyaan pertama.</li>
+        <li>Gunakan <code>=SUMIFS(range_amount,range_region,"Jakarta",range_status,"Selesai")</code> untuk pertanyaan kedua.</li>
+      </ol>`,
+    shortcutTip:'Gunakan Ctrl+F untuk mencari nilai spesifik saat memverifikasi hasil filter Anda secara manual.',
+    fields:[
+      numField('sumifJkt','Total Transaksi Region Jakarta (SUMIF)', sumifJakarta, 0, 'Rp'),
+      numField('sumifsJktSelesai','Total Transaksi Jakarta & Status Selesai (SUMIFS)', sumifsJakartaSelesai, 0, 'Rp')
+    ]
+  },
+  {
+    id:'t8', level:'level2', num:8, weight:10,
+    title:'Conditional Count & Average — COUNTIFS & AVERAGEIF',
+    competency:'Formula & Function',
+    goal:'Menjawab pertanyaan bisnis mengenai jumlah dan rata-rata berdasarkan kriteria kondisional.',
+    instructions:`
+      <p><b>Business question 1:</b> Berapa jumlah transaksi pada Region "Surabaya" dengan status "Selesai"?</p>
+      <p style="margin-top:8px"><b>Business question 2:</b> Berapa rata-rata Score untuk seluruh transaksi berstatus "Selesai"?</p>
+      <ol style="margin-top:10px">
+        <li>Gunakan <code>=COUNTIFS(range_region,"Surabaya",range_status,"Selesai")</code> untuk pertanyaan pertama.</li>
+        <li>Gunakan <code>=AVERAGEIF(range_status,"Selesai",range_score)</code> untuk pertanyaan kedua.</li>
+      </ol>`,
+    shortcutTip:'Gunakan Ctrl+H (Find & Replace) untuk memeriksa konsistensi penulisan nilai kategori seperti "Selesai".',
+    fields:[
+      numField('countifsSby','Jumlah Transaksi Surabaya & Selesai (COUNTIFS)', countifsSurabayaSelesai, 0, 'baris'),
+      numField('avgifScore','Rata-rata Score untuk Status Selesai (AVERAGEIF)', averageifScoreSelesai, 1, 'poin')
+    ]
+  },
+  {
+    id:'t9', level:'level2', num:9, weight:4,
+    title:'Conditional Formatting — Indikator Score',
+    competency:'Logical & Conditional Analysis',
+    goal:'Memberikan indikator visual otomatis berdasarkan nilai Score pegawai.',
+    instructions:`
+      <p><b>Kriteria:</b></p>
+      <ul>
+        <li>Score ≥ 80 → kategori <b>Tinggi</b> (warna hijau)</li>
+        <li>Score 60–79 → kategori <b>Sedang</b> (warna kuning/oranye)</li>
+        <li>Score &lt; 60 → kategori <b>Rendah</b> (warna merah)</li>
+      </ul>
+      <ol style="margin-top:10px">
+        <li>Blok kolom Score, buka <code>Alt, H, L</code> (Conditional Formatting).</li>
+        <li>Buat 3 rule baru sesuai kriteria di atas menggunakan "New Rule → Format Cells That Contain".</li>
+        <li>Setelah rule diterapkan, hitung berapa banyak baris yang termasuk kategori "Tinggi" (Score ≥ 80).</li>
+      </ol>`,
+    shortcutTip:'Gunakan Alt, H, L untuk membuka menu Conditional Formatting secara langsung.',
+    checklist:[
+      'Rule warna hijau untuk Score ≥ 80 sudah diterapkan',
+      'Rule warna kuning/oranye untuk Score 60-79 sudah diterapkan',
+      'Rule warna merah untuk Score < 60 sudah diterapkan'
+    ],
+    fields:[
+      numField('tinggiCount','Jumlah baris kategori "Tinggi" (Score ≥ 80)', tinggiCount, 0, 'baris')
+    ]
+  },
+  {
+    id:'t10', level:'level2', num:10, weight:4,
+    title:'Data Validation — Dropdown Status',
+    competency:'Logical & Conditional Analysis',
+    goal:'Membuat dropdown list agar input data status kelulusan lebih konsisten dan terkontrol.',
+    instructions:`
+      <ol>
+        <li>Buat kolom baru <code>Status Penilaian</code>.</li>
+        <li>Blok seluruh sel pada kolom tersebut, buka <code>Alt, A, V, V</code> (Data Validation).</li>
+        <li>Pilih <b>Allow: List</b>, lalu masukkan 3 pilihan berikut secara manual dipisahkan koma: <code>Lulus, Tidak Lulus, Belum Dinilai</code>.</li>
+        <li>Pastikan sel di luar kolom ini tidak dapat diisi nilai selain 3 pilihan tersebut (Error Alert aktif).</li>
+      </ol>`,
+    shortcutTip:'Gunakan Alt, A untuk cepat berpindah ke tab Data saat mengakses Data Validation.',
+    checklist:[
+      'Dropdown list sudah dibuat pada kolom Status Penilaian',
+      'Dropdown berisi tepat 3 pilihan: Lulus, Tidak Lulus, Belum Dinilai',
+      'Error Alert aktif sehingga input di luar 3 pilihan tersebut ditolak'
+    ],
+    fields:[]
+  },
+
+  // ---------------- LEVEL 3 : INTERMEDIATE ----------------
+  {
+    id:'t11', level:'level3', num:11, weight:8,
+    title:'Lookup Data Cabang (XLOOKUP / VLOOKUP)',
+    competency:'Lookup',
+    goal:'Mengambil informasi Branch Name dan Region dari Master Data Cabang berdasarkan Branch Code pada transaksi.',
+    instructions:`
+      <p>Perhatikan baris ke-<b>5</b> pada Dataset Transaksi (kolom "No" = 5). Gunakan <code>Branch Code</code> pada baris tersebut untuk mengambil <b>Branch Name</b> dan <b>Region</b> dari tabel Master Data Cabang.</p>
+      <ol>
+        <li>Gunakan <code>=XLOOKUP(branch_code,MasterCabang[Branch Code],MasterCabang[Branch Name])</code>, atau</li>
+        <li>Gunakan <code>=VLOOKUP(branch_code,MasterCabang,2,FALSE)</code> untuk Branch Name, dan kolom ke-3 untuk Region.</li>
+      </ol>`,
+    shortcutTip:'Gunakan Ctrl+F untuk menemukan baris "No = 5" dengan cepat pada tabel dataset.',
+    fields:[
+      textField('t11Branch','Branch Name (baris No.5)', t11Answer.branchName),
+      textField('t11Region','Region (baris No.5)', t11Answer.region)
+    ]
+  },
+  {
+    id:'t12', level:'level3', num:12, weight:7,
+    title:'INDEX + MATCH — Informasi Produk',
+    competency:'Lookup',
+    goal:'Mengambil informasi Product Name dan Category dari Master Data Produk menggunakan kombinasi INDEX + MATCH.',
+    instructions:`
+      <p>Perhatikan baris ke-<b>12</b> pada Dataset Transaksi (kolom "No" = 12). Gunakan <code>Product Code</code> pada baris tersebut untuk mengambil <b>Product Name</b> dan <b>Category</b> dari Master Data Produk.</p>
+      <ol>
+        <li>Gunakan <code>=INDEX(MasterProduk[Product Name],MATCH(product_code,MasterProduk[Product Code],0))</code></li>
+        <li>Ulangi pola yang sama untuk mengambil kolom Category.</li>
+      </ol>`,
+    shortcutTip:'Tekan Ctrl+Home untuk kembali ke sel A1 dengan cepat sebelum membuat formula baru.',
+    fields:[
+      textField('t12Product','Product Name (baris No.12)', t12Answer.productName),
+      textField('t12Category','Category (baris No.12)', t12Answer.category)
+    ]
+  },
+  {
+    id:'t13', level:'level3', num:13, weight:7,
+    title:'PivotTable — Rekap Transaksi per Region',
+    competency:'PivotTable/PivotChart',
+    goal:'Membuat rekap transaksi per Region menggunakan PivotTable untuk mendukung pengambilan keputusan bisnis.',
+    instructions:`
+      <ol>
+        <li>Blok seluruh dataset transaksi, buka <code>Alt, N, V</code> untuk menyisipkan PivotTable.</li>
+        <li>Letakkan field <code>Region</code> pada area Rows, dan <code>Transaction Amount</code> (Sum) pada area Values.</li>
+        <li>Tambahkan juga field <code>Branch Name</code> dan <code>Category</code> sebagai rekap tambahan (opsional pada Rows/Filters).</li>
+        <li>Perhatikan hasil PivotTable Anda, tentukan Region dengan total Transaction Amount tertinggi.</li>
+      </ol>`,
+    shortcutTip:'Gunakan Alt, N, V untuk menyisipkan PivotTable secara langsung dari tab Insert.',
+    checklist:[
+      'PivotTable sudah dibuat dari seluruh dataset transaksi',
+      'Field Region ditempatkan pada Rows, Transaction Amount (Sum) pada Values'
+    ],
+    fields:[
+      textField('t13Region','Region dengan Total Transaction Amount tertinggi', topRegion),
+      numField('t13Amount','Total Transaction Amount pada Region tersebut', regionTotals[topRegion], Math.max(1,Math.round(regionTotals[topRegion]*0.005)), 'Rp')
+    ]
+  },
+  {
+    id:'t14', level:'level3', num:14, weight:8,
+    title:'Pivot Grouping, Slicer & PivotChart',
+    competency:'PivotTable/PivotChart',
+    goal:'Menganalisis tren transaksi bulanan menggunakan Grouping, Slicer, dan PivotChart.',
+    instructions:`
+      <ol>
+        <li>Pada PivotTable yang sudah dibuat, ubah field Rows menjadi <code>Transaction Date</code>, lalu klik kanan pada salah satu tanggal → <b>Group</b> → pilih <b>Months</b>.</li>
+        <li>Tambahkan <b>Slicer</b> berdasarkan <code>Region</code> dan <code>Status</code> (<code>Alt, N, S, L</code>) agar rekap dapat difilter interaktif.</li>
+        <li>Buat <b>PivotChart</b> (<code>Alt, N, S, C</code>) berdasarkan hasil grouping bulanan untuk memvisualisasikan tren jumlah transaksi per bulan.</li>
+        <li>Amati bulan dengan jumlah transaksi terbanyak sepanjang tahun.</li>
+      </ol>`,
+    shortcutTip:'Gunakan Alt, N, S, L untuk menyisipkan Slicer langsung dari tab Insert.',
+    checklist:[
+      'Data pada PivotTable sudah di-grouping per Bulan (Months)',
+      'Slicer Region dan Status sudah ditambahkan dan berfungsi memfilter PivotTable',
+      'PivotChart sudah dibuat berdasarkan hasil grouping bulanan'
+    ],
+    fields:[
+      textField('t14Month','Bulan dengan jumlah transaksi terbanyak', topMonthName)
+    ]
+  },
+
+  // ---------------- CAPSTONE ----------------
+  {
+    id:'t15', level:'capstone', num:15, weight:10,
+    title:'Mini Business Report (Capstone Assessment)',
+    competency:'Business Insight',
+    goal:'Menggabungkan seluruh kompetensi — cleaning, formula, lookup, conditional analysis, dan PivotTable — menjadi satu laporan bisnis ringkas.',
+    instructions:`
+      <p>Gunakan seluruh Dataset Transaksi, Master Cabang, dan Master Produk untuk membuat <b>Mini Business Report</b> yang mencakup:</p>
+      <ol>
+        <li>Data yang sudah dibersihkan dan diformat secara profesional.</li>
+        <li>Ringkasan formula dasar (Total, Rata-rata, Min, Max Transaction Amount).</li>
+        <li>Hasil lookup Branch Name &amp; Region untuk seluruh transaksi (gunakan XLOOKUP/VLOOKUP, salin ke seluruh baris).</li>
+        <li>Analisis kondisional (contoh: total transaksi per Region menggunakan SUMIF/SUMIFS).</li>
+        <li>PivotTable rekap transaksi per Region dan Branch, beserta PivotChart pendukung.</li>
+        <li>Ringkasan (summary) akhir dalam bentuk 1 sheet ringkas.</li>
+        <li>Minimal <b>3 insight bisnis</b> tertulis berdasarkan hasil analisis Anda (tuliskan pada kolom di bawah).</li>
+      </ol>`,
+    shortcutTip:'Gunakan Ctrl+Page Up / Ctrl+Page Down untuk berpindah antar sheet dengan cepat saat menyusun laporan multi-sheet.',
+    checklist:[
+      'Seluruh data sudah dibersihkan dan diformat secara profesional',
+      'Formula dasar (SUM, AVERAGE, MIN, MAX) sudah dihitung dengan benar',
+      'Lookup Branch Name & Region sudah diterapkan pada seluruh baris transaksi',
+      'Analisis kondisional (SUMIF/SUMIFS) per Region sudah dibuat',
+      'PivotTable & PivotChart rekap per Region/Branch sudah dibuat',
+      'Sheet Summary/ringkasan akhir sudah disusun rapi'
+    ],
+    fields:[
+      numField('t15Total','Total keseluruhan Transaction Amount (cross-check)', totalAmount, 0, 'Rp'),
+      textField('t15BestBranch','Branch Name dengan total Transaction Amount tertinggi', bestBranch)
+    ],
+    insight:true
+  }
+];
+
+const TASK_WEIGHT_TOTAL = TASKS.reduce((a,t)=>a+t.weight,0); // should equal 100
+const COMPETENCIES = ['Basic Excel','Formula & Function','Logical & Conditional Analysis','Lookup','Data Management','PivotTable/PivotChart','Business Insight'];
+
+/* =========================================================
+   5. STATE
+   ========================================================= */
+const state = {
+  taskStatus:{}, // id -> 'not-started' | 'in-progress' | 'completed'
+  taskScore:{},  // id -> points earned
+  fieldValues:{},
+  checklistState:{},
+  timeLeftSec:60*60,
+  timerHandle:null,
+  started:false,
+  submitted:false,
+  synced:false,
+  startTimestamp:null,
+  adminMode:false
+};
+TASKS.forEach(t=>{ state.taskStatus[t.id]='not-started'; state.taskScore[t.id]=0; });
+
+/* =========================================================
+   6. RENDER TASK CARDS
+   ========================================================= */
+function levelBadgeLabel(level){
+  return level==='level1'?'Basic': level==='level2'?'Basic–Intermediate': level==='level3'?'Intermediate':'Capstone';
+}
+function statusPillHtml(status){
+  if(status==='completed') return '<span class="status-pill status-done">✓ Completed</span>';
+  if(status==='in-progress') return '<span class="status-pill status-progress">● In Progress</span>';
+  return '<span class="status-pill status-not">Not Started</span>';
+}
+
+function buildTaskCard(task){
+  const card = document.createElement('div');
+  card.className='task-card';
+  card.id='card-'+task.id;
+
+  const fieldsHtml = (task.fields && task.fields.length) ? `
+    <div class="subhead">Jawaban Anda</div>
+    <div class="answer-grid" id="fields-${task.id}">
+      ${task.fields.map(f=>`
+        <div class="answer-field" id="field-${task.id}-${f.id}">
+          <label>${f.label}</label>
+          <div class="input-wrap">
+            <input type="text" data-task="${task.id}" data-field="${f.id}" placeholder="${f.type==='number'?'Masukkan angka':'Masukkan teks'}">
+            ${f.unit?`<span class="unit">${f.unit}</span>`:''}
+          </div>
+        </div>`).join('')}
+    </div>` : '';
+
+  const checklistHtml = (task.checklist && task.checklist.length) ? `
+    <div class="subhead">Self Verification — Kerjakan di Microsoft Excel, lalu centang</div>
+    <div class="checklist" id="checklist-${task.id}">
+      ${task.checklist.map((c,idx)=>`
+        <label class="check-item" id="check-${task.id}-${idx}">
+          <input type="checkbox" data-task="${task.id}" data-idx="${idx}">
+          <span>${c}</span>
+        </label>`).join('')}
+    </div>` : '';
+
+  const insightHtml = task.insight ? `
+    <div class="subhead">Business Insight (minimal 3 insight)</div>
+    <textarea id="insight-${task.id}" placeholder="1. ...&#10;2. ...&#10;3. ..." style="width:100%;min-height:110px;border:1.5px solid var(--border);border-radius:8px;padding:12px;font-size:13px;outline:none;"></textarea>
+  ` : '';
+
+  const btnLabel = (task.fields && task.fields.length) ? 'Periksa Jawaban' : 'Tandai Task Selesai';
+
+  card.innerHTML = `
+    <div class="task-head">
+      <div class="task-head-left">
+        <div class="task-num">${String(task.num).padStart(2,'0')}</div>
+        <div class="task-titlewrap">
+          <h3>${task.title}</h3>
+          <div class="task-badges">
+            <span class="badge badge-level">${levelBadgeLabel(task.level)}</span>
+            <span class="badge badge-comp">${task.competency}</span>
+            <span class="badge badge-score">${task.weight} poin</span>
+          </div>
+        </div>
+      </div>
+      <div id="pill-${task.id}">${statusPillHtml(state.taskStatus[task.id])}</div>
+    </div>
+    <div class="task-body">
+      <div class="task-goal"><b>Tujuan:</b> ${task.goal}</div>
+      <div class="subhead">Instruksi Pengerjaan</div>
+      <div class="instruction-box">${task.instructions}</div>
+      <div class="shortcut-tip">💡 <span>${task.shortcutTip}</span></div>
+      ${checklistHtml}
+      ${fieldsHtml}
+      ${insightHtml}
+      <div class="task-footer">
+        <div>
+          <button class="btn btn-primary btn-sm" id="check-btn-${task.id}">${btnLabel}</button>
+          <span class="feedback" id="feedback-${task.id}"></span>
+        </div>
+        <div class="admin-toggle-wrap"></div>
+      </div>
+      <div class="admin-box" id="admin-${task.id}">
+        <b>Answer Key (Trainer Mode):</b>
+        ${(task.fields||[]).map(f=>`<div>${f.label}: <b>${f.type==='number'?fmtNum(f.expected):f.expected}</b></div>`).join('') || '<div>Task ini dinilai melalui Self Verification checklist oleh peserta.</div>'}
+      </div>
+    </div>
+  `;
+  return card;
+}
+
+function renderAllTasks(){
+  const containers = {level1:document.getElementById('tasksLevel1'),level2:document.getElementById('tasksLevel2'),level3:document.getElementById('tasksLevel3'),capstone:document.getElementById('tasksCapstone')};
+  TASKS.forEach(t=>{ containers[t.level].appendChild(buildTaskCard(t)); });
+}
+
+/* =========================================================
+   7. VALIDATION LOGIC
+   ========================================================= */
+function normalizeText(s){ return (s||'').toString().trim().toLowerCase(); }
+
+function checkTask(task){
+  if(state.submitted) return;
+  let allCorrect = true;
+  let anyFilled = false;
+
+  // validate fields
+  (task.fields||[]).forEach(f=>{
+    const input = document.querySelector(`input[data-task="${task.id}"][data-field="${f.id}"]`);
+    const wrap = document.getElementById(`field-${task.id}-${f.id}`);
+    const raw = input.value;
+    if(raw.trim()!=='') anyFilled = true;
+    let correct = false;
+    if(f.type==='number'){
+      const num = parseFloat(raw.replace(/[^0-9.\-]/g,''));
+      if(!isNaN(num) && Math.abs(num - f.expected) <= (f.tolerance||0)) correct = true;
+    } else {
+      if(normalizeText(raw) === normalizeText(f.expected)) correct = true;
+    }
+    wrap.classList.remove('correct','wrong');
+    wrap.classList.add(correct?'correct':'wrong');
+    if(!correct) allCorrect = false;
+  });
+
+  // validate checklist
+  let checklistOk = true;
+  if(task.checklist && task.checklist.length){
+    task.checklist.forEach((c,idx)=>{
+      const cb = document.querySelector(`input[type="checkbox"][data-task="${task.id}"][data-idx="${idx}"]`);
+      if(!cb.checked) checklistOk = false;
+    });
+  }
+
+  // insight textarea (min length)
+  let insightOk = true;
+  if(task.insight){
+    const ta = document.getElementById('insight-'+task.id);
+    insightOk = ta.value.trim().length >= 40;
+  }
+
+  const feedbackEl = document.getElementById('feedback-'+task.id);
+  const hasFields = task.fields && task.fields.length;
+  const hasChecklist = task.checklist && task.checklist.length;
+
+  let success = true;
+  if(hasFields) success = success && allCorrect && anyFilled;
+  if(hasChecklist) success = success && checklistOk;
+  if(task.insight) success = success && insightOk;
+  if(!hasFields && !hasChecklist && !task.insight) success = true;
+
+  if(success){
+    state.taskStatus[task.id]='completed';
+    state.taskScore[task.id]=task.weight;
+    feedbackEl.textContent = '✓ Jawaban benar / task terverifikasi. Poin diperoleh: '+task.weight;
+    feedbackEl.className='feedback show ok';
+  } else {
+    state.taskStatus[task.id]='in-progress';
+    state.taskScore[task.id]=0;
+    let msg = '✗ Belum lengkap/benar. ';
+    if(hasFields && !allCorrect) msg += 'Periksa kembali jawaban numerik/teks Anda. ';
+    if(hasChecklist && !checklistOk) msg += 'Centang seluruh langkah Self Verification. ';
+    if(task.insight && !insightOk) msg += 'Tuliskan minimal 3 insight bisnis (min. 40 karakter). ';
+    feedbackEl.textContent = msg;
+    feedbackEl.className='feedback show bad';
+  }
+
+  document.getElementById('pill-'+task.id).innerHTML = statusPillHtml(state.taskStatus[task.id]);
+  updateDashboard();
+}
+
+document.addEventListener('click', e=>{
+  const btn = e.target.closest('[id^="check-btn-"]');
+  if(btn){
+    const taskId = btn.id.replace('check-btn-','');
+    const task = TASKS.find(t=>t.id===taskId);
+    checkTask(task);
+  }
+});
+document.addEventListener('change', e=>{
+  if(e.target.matches('.check-item input[type="checkbox"]')){
+    e.target.closest('.check-item').classList.toggle('checked', e.target.checked);
+  }
+});
+
+/* =========================================================
+   8. NAVIGATION
+   ========================================================= */
+function switchSection(key){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.getElementById('sec-'+key).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  const navBtn = document.querySelector(`.nav-item[data-nav="${key}"]`);
+  if(navBtn) navBtn.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+  if(key==='result') renderResult();
+}
+document.querySelectorAll('.nav-item[data-nav]').forEach(btn=>{
+  btn.addEventListener('click', ()=>switchSection(btn.dataset.nav));
+});
+document.getElementById('btnJumpDataset').addEventListener('click', ()=>{
+  document.getElementById('datasetAnchor').scrollIntoView({behavior:'smooth',block:'start'});
+});
+
+/* =========================================================
+   9. DASHBOARD / PROGRESS UPDATE
+   ========================================================= */
+function updateDashboard(){
+  const completed = TASKS.filter(t=>state.taskStatus[t.id]==='completed').length;
+  const totalScore = TASKS.reduce((a,t)=>a+state.taskScore[t.id],0);
+  const pct = Math.round((completed/TASKS.length)*100);
+
+  document.getElementById('dashCompleted').textContent = completed;
+  document.getElementById('dashProgress').textContent = pct+'%';
+  document.getElementById('dashProgressSub').textContent = completed===0?'belum dimulai':(completed===TASKS.length?'semua task selesai':'sedang berjalan');
+  document.getElementById('dashScore').textContent = totalScore;
+  document.getElementById('sideProgressPct').textContent = pct+'%';
+  document.getElementById('sideProgressBar').style.width = pct+'%';
+
+  ['level1','level2','level3'].forEach(lv=>{
+    const tks = TASKS.filter(t=>t.level===lv);
+    const done = tks.filter(t=>state.taskStatus[t.id]==='completed').length;
+    document.getElementById('cnt-'+lv).textContent = done+'/'+tks.length;
+  });
+  const capTks = TASKS.filter(t=>t.level==='capstone');
+  document.getElementById('cnt-capstone').textContent = capTks.filter(t=>state.taskStatus[t.id]==='completed').length+'/'+capTks.length;
+}
+
+/* =========================================================
+   10. TIMER
+   ========================================================= */
+function fmtTime(sec){
+  const m = Math.floor(sec/60), s = sec%60;
+  return String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+}
+function tickTimer(){
+  if(!state.started || state.submitted) return;
+  state.timeLeftSec--;
+  const txt = fmtTime(Math.max(0,state.timeLeftSec));
+  document.getElementById('timerText').textContent = txt;
+  document.getElementById('dashTime').textContent = txt;
+  const box = document.getElementById('timerBox');
+  if(state.timeLeftSec<=300){ box.classList.add('warn'); } else { box.classList.remove('warn'); }
+  if(state.timeLeftSec<=0){
+    clearInterval(state.timerHandle);
+    doSubmit(true);
+  }
+}
+
+/* =========================================================
+   11. START / SUBMIT FLOW
+   ========================================================= */
+const inpName = document.getElementById('inpName');
+const inpEmpId = document.getElementById('inpEmpId');
+const inpDivisi = document.getElementById('inpDivisi');
+const inpTanggal = document.getElementById('inpTanggal');
+const inpAgree = document.getElementById('inpAgree');
+const btnStartAssessment = document.getElementById('btnStartAssessment');
+
+const today = new Date();
+inpTanggal.value = String(today.getDate()).padStart(2,'0')+'/'+String(today.getMonth()+1).padStart(2,'0')+'/'+today.getFullYear();
+
+function refreshStartBtn(){
+  btnStartAssessment.disabled = !(inpName.value.trim() && inpEmpId.value.trim() && inpDivisi.value.trim() && inpAgree.checked);
+}
+[inpName,inpEmpId,inpDivisi].forEach(el=>el.addEventListener('input',refreshStartBtn));
+inpAgree.addEventListener('change',refreshStartBtn);
+
+function openModal(id){ document.getElementById(id).classList.add('show'); }
+function closeModal(id){ document.getElementById(id).classList.remove('show'); }
+document.querySelectorAll('[data-close-modal]').forEach(b=>b.addEventListener('click',()=>closeModal(b.dataset.closeModal)));
+
+btnStartAssessment.addEventListener('click', ()=>openModal('modalConfirmStart'));
+
+document.getElementById('btnConfirmStart').addEventListener('click', ()=>{
+  closeModal('modalConfirmStart');
+  document.getElementById('screen-welcome').style.display='none';
+  document.getElementById('app').classList.add('active');
+  document.getElementById('chipName').textContent = inpName.value.trim();
+  document.getElementById('chipId').textContent = inpEmpId.value.trim();
+  document.getElementById('resName').textContent = inpName.value.trim();
+  document.getElementById('resId').textContent = inpEmpId.value.trim();
+  state.started = true;
+  state.startTimestamp = new Date();
+  state.timerHandle = setInterval(tickTimer,1000);
+  updateDashboard();
+});
+
+document.getElementById('btnSubmitTop').addEventListener('click', ()=>{
+  const completed = TASKS.filter(t=>state.taskStatus[t.id]==='completed').length;
+  document.getElementById('submitWarnText').textContent = completed===TASKS.length
+    ? 'Anda telah menyelesaikan seluruh 15 task. Setelah submit, jawaban tidak dapat diubah kembali. Lanjutkan?'
+    : `Anda baru menyelesaikan ${completed} dari ${TASKS.length} task. Setelah submit, jawaban tidak dapat diubah kembali. Lanjutkan?`;
+  openModal('modalConfirmSubmit');
+});
+document.getElementById('btnConfirmSubmit').addEventListener('click', ()=>{
+  closeModal('modalConfirmSubmit');
+  doSubmit(false);
+});
+
+function doSubmit(auto){
+  if(state.submitted) return;
+  state.submitted = true;
+  clearInterval(state.timerHandle);
+  switchSection('result');
+}
+
+/* =========================================================
+   12. RESULT PAGE
+   ========================================================= */
+function scoreCategory(pct){
+  if(pct>=90) return {label:'Excellent',color:'var(--green)'};
+  if(pct>=80) return {label:'Very Good',color:'var(--blue)'};
+  if(pct>=70) return {label:'Good',color:'#4A78C4'};
+  if(pct>=60) return {label:'Basic Competency',color:'var(--orange)'};
+  return {label:'Need Improvement',color:'var(--red)'};
+}
+
+async function syncResultToSheet(){
+  const statusEl = document.getElementById('syncStatus');
+  if(!CONFIG.GOOGLE_SHEET_API_URL || CONFIG.GOOGLE_SHEET_API_URL.indexOf('PASTE_')===0){
+    if(statusEl){ statusEl.textContent='⚠ Google Sheet belum terhubung. Atur GOOGLE_SHEET_API_URL pada CONFIG (lihat README.md).'; statusEl.style.color='#FFD9A0'; }
+    return;
+  }
+  if(statusEl){ statusEl.textContent='⏳ Menyinkronkan hasil ke Google Sheet...'; statusEl.style.color='#C9DAF0'; }
+
+  const totalScore = TASKS.reduce((a,t)=>a+state.taskScore[t.id],0);
+  const pct = Math.round((totalScore/TASK_WEIGHT_TOTAL)*100);
+  const cat = scoreCategory(pct);
+  const completed = TASKS.filter(t=>state.taskStatus[t.id]==='completed').length;
+  const elapsed = Math.round((60*60 - state.timeLeftSec)/60);
+  const insightTask = TASKS.find(t=>t.insight);
+  const insightEl = insightTask ? document.getElementById('insight-'+insightTask.id) : null;
+  const insightText = insightEl ? insightEl.value : '';
+  const taskDetail = {};
+  TASKS.forEach(t=>{ taskDetail[t.id] = {title:t.title, competency:t.competency, score:state.taskScore[t.id], weight:t.weight, status:state.taskStatus[t.id]}; });
+
+  const payload = {
+    name: inpName.value.trim(),
+    employeeId: inpEmpId.value.trim(),
+    division: inpDivisi.value.trim(),
+    totalScore: totalScore,
+    percentage: pct,
+    category: cat.label,
+    taskCompleted: completed,
+    totalTask: TASKS.length,
+    timeUsedMinutes: elapsed,
+    taskDetail: taskDetail,
+    insight: insightText
+  };
+
+  try{
+    const res = await fetch(CONFIG.GOOGLE_SHEET_API_URL, {
+      method:'POST',
+      headers:{'Content-Type':'text/plain;charset=utf-8'}, // hindari CORS preflight ke Apps Script
+      body: JSON.stringify(payload)
+    });
+    let json = null;
+    try{ json = await res.json(); }catch(parseErr){ json = null; }
+    if(json && json.status==='success'){
+      state.synced = true;
+      if(statusEl){ statusEl.textContent='✅ Hasil berhasil tersimpan ke Google Sheet'; statusEl.style.color='#B7F0CF'; }
+    } else {
+      if(statusEl){ statusEl.textContent='⚠ Gagal menyimpan ke Google Sheet. Periksa deployment Apps Script Anda.'; statusEl.style.color='#FFD9A0'; }
+    }
+  }catch(err){
+    if(statusEl){ statusEl.textContent='⚠ Tidak dapat terhubung ke Google Sheet (cek koneksi internet atau URL).'; statusEl.style.color='#FFD9A0'; }
+  }
+}
+
+function renderResult(){
+  const totalScore = TASKS.reduce((a,t)=>a+state.taskScore[t.id],0);
+  const pct = Math.round((totalScore/TASK_WEIGHT_TOTAL)*100);
+  const cat = scoreCategory(pct);
+  const completed = TASKS.filter(t=>state.taskStatus[t.id]==='completed').length;
+
+  document.getElementById('resultScoreNum').textContent = totalScore;
+  document.getElementById('scoreCircle').style.setProperty('--pct', pct);
+  document.getElementById('resultLevel').textContent = state.submitted ? 'Assessment Selesai' : 'Sedang Berlangsung';
+  const badge = document.getElementById('resultBadge');
+  badge.textContent = cat.label+' ('+pct+'%)';
+  badge.style.background = '#fff';
+  badge.style.color = cat.color;
+
+  document.getElementById('resTaskDone').textContent = completed+' / '+TASKS.length;
+  const elapsed = state.startTimestamp ? Math.round((60*60 - state.timeLeftSec)/60) : 0;
+  document.getElementById('resTime').textContent = elapsed+' menit';
+
+  // competency table
+  const compRows = COMPETENCIES.map(comp=>{
+    const tasksInComp = TASKS.filter(t=>t.competency===comp);
+    const maxPts = tasksInComp.reduce((a,t)=>a+t.weight,0);
+    const earnedPts = tasksInComp.reduce((a,t)=>a+state.taskScore[t.id],0);
+    const compPct = maxPts>0 ? Math.round((earnedPts/maxPts)*100) : 0;
+    const compCat = scoreCategory(compPct);
+    return `<tr>
+      <td>${comp}</td>
+      <td>${earnedPts}/${maxPts}</td>
+      <td>${compPct}%</td>
+      <td><div class="comp-bar-bg"><div style="width:${compPct}%;background:${compCat.color}"></div></div></td>
+      <td style="color:${compCat.color};font-weight:700">${compCat.label}</td>
+    </tr>`;
+  }).join('');
+  document.getElementById('compTable').innerHTML = `
+    <thead><tr><th>Competency</th><th>Skor</th><th>Persentase</th><th>Bar</th><th>Level</th></tr></thead>
+    <tbody>${compRows}</tbody>`;
+
+  // task mini list
+  document.getElementById('taskListMini').innerHTML = TASKS.map(t=>{
+    const st = state.taskStatus[t.id];
+    const icon = st==='completed' ? '✅' : (st==='in-progress' ? '🟠' : '⬜');
+    return `<div class="mini-row"><span>${icon} Task ${String(t.num).padStart(2,'0')} — ${t.title}</span><b>${state.taskScore[t.id]}/${t.weight}</b></div>`;
+  }).join('');
+
+  if(state.submitted && !state.synced){
+    syncResultToSheet();
+  }
+}
+
+document.getElementById('btnPrint').addEventListener('click', ()=>window.print());
+document.getElementById('btnReset').addEventListener('click', ()=>{
+  if(confirm('Reset seluruh progress assessment? Tindakan ini tidak dapat dibatalkan.')){
+    location.reload();
+  }
+});
+
+/* =========================================================
+   13. ADMIN MODE
+   ========================================================= */
+document.getElementById('btnAdmin').addEventListener('click', ()=>openModal('modalAdmin'));
+document.getElementById('btnConfirmAdmin').addEventListener('click', ()=>{
+  const pass = document.getElementById('adminPass').value;
+  if(pass === 'TRAINER2024'){
+    state.adminMode = true;
+    document.querySelectorAll('.admin-box').forEach(b=>b.classList.add('show'));
+    closeModal('modalAdmin');
+    document.getElementById('btnAdmin').textContent = '🔓 Admin Mode Aktif';
+  } else {
+    alert('Passcode salah. Hubungi trainer/PIC assessment untuk mendapatkan passcode.');
+  }
+  document.getElementById('adminPass').value='';
+});
+
+/* =========================================================
+   14. NOTES & CALCULATOR (floating widgets)
+   ========================================================= */
+function togglePanel(id){
+  const el = document.getElementById(id);
+  const isShown = el.classList.contains('show');
+  document.querySelectorAll('.panel-float').forEach(p=>p.classList.remove('show'));
+  if(!isShown) el.classList.add('show');
+}
+document.getElementById('fabNotes').addEventListener('click', ()=>togglePanel('panelNotes'));
+document.getElementById('fabCalc').addEventListener('click', ()=>togglePanel('panelCalc'));
+document.querySelectorAll('[data-close]').forEach(b=>b.addEventListener('click',()=>document.getElementById(b.dataset.close).classList.remove('show')));
+
+// simple calculator
+let calcExpr = '';
+const calcDisplay = document.getElementById('calcDisplay');
+const calcKeys = ['7','8','9','/','4','5','6','*','1','2','3','-','0','.','C','+','='];
+const calcGrid = document.getElementById('calcGrid');
+calcKeys.forEach(k=>{
+  const b = document.createElement('button');
+  b.textContent = k;
+  if(['/','*','-','+'].includes(k)) b.className='op';
+  if(k==='=') b.className='eq';
+  if(k==='C') b.className='clr';
+  b.addEventListener('click', ()=>{
+    if(k==='C'){ calcExpr=''; }
+    else if(k==='='){
+      try{ calcExpr = String(Function('"use strict";return ('+calcExpr+')')()); }
+      catch(e){ calcExpr='Error'; }
+    } else { calcExpr += k; }
+    calcDisplay.textContent = calcExpr || '0';
+  });
+  calcGrid.appendChild(b);
+});
+
+/* =========================================================
+   15. INIT
+   ========================================================= */
+renderMainTable();
+renderBranchTable();
+renderProductTable();
+renderAllTasks();
+updateDashboard();
+document.getElementById('timerText').textContent = fmtTime(state.timeLeftSec);
+document.getElementById('dashTime').textContent = fmtTime(state.timeLeftSec);
+
+window.addEventListener('beforeunload', function(e){
+  if(state.started && !state.submitted){
+    e.preventDefault();
+    e.returnValue = '';
+  }
+});
+
+})();
+</script>
+</body>
+</html>
