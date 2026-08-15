@@ -1,0 +1,1415 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Practical Excel Assessment — Basic to Intermediate</title>
+<style>
+:root{
+  --ink:#0E1A2B;
+  --ink-2:#16253C;
+  --navy:#132540;
+  --navy-soft:#1C3455;
+  --paper:#F5F6F8;
+  --paper-card:#FFFFFF;
+  --line:#E1E4EA;
+  --line-soft:#EDEFF3;
+  --text:#182233;
+  --text-soft:#5B6577;
+  --text-faint:#8891A1;
+  --gold:#B8842E;
+  --gold-soft:#F3E4C8;
+  --teal:#1D7A66;
+  --teal-soft:#DDEFEA;
+  --red:#B23B3B;
+  --red-soft:#F7E1E1;
+  --blue:#2A5DA8;
+  --blue-soft:#E2EAF6;
+  --radius:10px;
+  --radius-lg:16px;
+  --mono: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --serif: Georgia, "Iowan Old Style", "Palatino Linotype", serif;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  font-family:var(--sans);
+  background:var(--paper);
+  color:var(--text);
+  -webkit-font-smoothing:antialiased;
+  min-height:100vh;
+}
+::selection{background:var(--gold-soft);}
+
+/* ===== Layout shell ===== */
+#app{display:flex; min-height:100vh;}
+
+/* ===== Sidebar ===== */
+#sidebar{
+  width:248px;
+  flex-shrink:0;
+  background: linear-gradient(180deg, var(--navy) 0%, var(--ink) 100%);
+  color:#fff;
+  display:flex;
+  flex-direction:column;
+  position:sticky;
+  top:0;
+  height:100vh;
+  overflow-y:auto;
+}
+.brand{
+  padding:22px 20px 16px 20px;
+  border-bottom:1px solid rgba(255,255,255,0.08);
+}
+.brand .eyebrow{
+  font-size:10.5px;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:var(--gold-soft);
+  opacity:.85;
+  margin:0 0 6px 0;
+  font-weight:600;
+}
+.brand h1{
+  font-size:17px;
+  margin:0;
+  line-height:1.3;
+  font-weight:700;
+  letter-spacing:-0.01em;
+}
+.brand .sub{
+  font-size:12px;
+  color:#AEB9CC;
+  margin-top:4px;
+}
+nav.sections{padding:14px 10px; flex:1;}
+.nav-item{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  width:100%;
+  padding:11px 12px;
+  border-radius:8px;
+  background:transparent;
+  border:none;
+  color:#C7D0E0;
+  font-size:13.5px;
+  font-family:var(--sans);
+  text-align:left;
+  cursor:pointer;
+  margin-bottom:3px;
+  transition:background .15s ease, color .15s ease;
+}
+.nav-item:hover{ background:rgba(255,255,255,0.06); color:#fff;}
+.nav-item.active{ background:rgba(184,132,46,0.18); color:#fff; box-shadow: inset 3px 0 0 var(--gold);}
+.nav-item .num{
+  font-family:var(--mono);
+  font-size:11px;
+  color:var(--gold-soft);
+  opacity:.8;
+  width:20px;
+  flex-shrink:0;
+}
+.nav-item.active .num{opacity:1; color:var(--gold);}
+.nav-item .lbl{flex:1;}
+.nav-item .cnt{
+  font-family:var(--mono);
+  font-size:10.5px;
+  color:#8b96ab;
+  background:rgba(255,255,255,0.06);
+  padding:2px 6px;
+  border-radius:20px;
+}
+.nav-item.active .cnt{color:#0E1A2B; background:var(--gold);}
+
+.sidebar-footer{
+  padding:16px 20px 20px 20px;
+  border-top:1px solid rgba(255,255,255,0.08);
+}
+.mode-toggle{
+  display:flex;
+  background:rgba(255,255,255,0.06);
+  border-radius:8px;
+  padding:3px;
+  gap:3px;
+}
+.mode-btn{
+  flex:1;
+  padding:7px 8px;
+  border:none;
+  border-radius:6px;
+  background:transparent;
+  color:#AEB9CC;
+  font-size:11.5px;
+  font-weight:600;
+  cursor:pointer;
+  font-family:var(--sans);
+}
+.mode-btn.active{background:#fff; color:var(--ink);}
+.reset-link{
+  display:block;
+  margin-top:14px;
+  font-size:11.5px;
+  color:#8b96ab;
+  cursor:pointer;
+  text-decoration:underline;
+  text-underline-offset:2px;
+}
+.reset-link:hover{color:#fff;}
+
+/* ===== Main column ===== */
+#main{flex:1; min-width:0; display:flex; flex-direction:column;}
+
+header.topbar{
+  background:var(--paper-card);
+  border-bottom:1px solid var(--line);
+  padding:26px 36px 22px 36px;
+}
+.topbar-title-row{
+  display:flex; justify-content:space-between; align-items:flex-start; gap:24px; flex-wrap:wrap;
+}
+.topbar-title-row h2{
+  font-family:var(--serif);
+  font-size:26px;
+  margin:0 0 4px 0;
+  letter-spacing:-0.01em;
+  color:var(--ink);
+}
+.topbar-title-row .desc{
+  font-size:13px;
+  color:var(--text-soft);
+  max-width:560px;
+  line-height:1.5;
+}
+.timer-box{
+  text-align:right;
+  flex-shrink:0;
+}
+.timer-box .t-label{font-size:10.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--text-faint); font-weight:600;}
+.timer-box .t-val{font-family:var(--mono); font-size:24px; font-weight:600; color:var(--navy); letter-spacing:.02em;}
+.timer-box .t-controls{margin-top:4px;}
+.timer-box button{
+  font-size:11px; padding:4px 10px; border-radius:6px; border:1px solid var(--line);
+  background:#fff; color:var(--text-soft); cursor:pointer; font-family:var(--sans);
+}
+.timer-box button:hover{border-color:var(--navy); color:var(--navy);}
+
+/* participant info form */
+.participant-form{
+  display:grid;
+  grid-template-columns:repeat(4, 1fr);
+  gap:12px;
+  margin-top:18px;
+}
+.pfield{display:flex; flex-direction:column; gap:4px;}
+.pfield label{font-size:10.5px; text-transform:uppercase; letter-spacing:.06em; color:var(--text-faint); font-weight:600;}
+.pfield input, .pfield select{
+  border:1px solid var(--line);
+  border-radius:7px;
+  padding:8px 10px;
+  font-size:13px;
+  font-family:var(--sans);
+  color:var(--text);
+  background:#fbfbfc;
+}
+.pfield input:focus, .pfield select:focus{outline:none; border-color:var(--navy); background:#fff;}
+
+/* dashboard cards */
+.dash-cards{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:14px;
+  padding:22px 36px 0 36px;
+}
+.dcard{
+  background:var(--paper-card);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  padding:16px 18px;
+}
+.dcard .dc-label{font-size:10.5px; text-transform:uppercase; letter-spacing:.07em; color:var(--text-faint); font-weight:700;}
+.dcard .dc-val{font-family:var(--mono); font-size:26px; font-weight:600; color:var(--ink); margin-top:6px;}
+.dcard.gold .dc-val{color:var(--gold);}
+.dcard.teal .dc-val{color:var(--teal);}
+.progress-wrap{padding:14px 36px 4px 36px;}
+.progress-track{
+  height:8px; background:var(--line-soft); border-radius:8px; overflow:hidden;
+}
+.progress-fill{
+  height:100%; background:linear-gradient(90deg, var(--gold) 0%, var(--teal) 100%);
+  width:0%; transition:width .3s ease;
+}
+.progress-caption{font-size:11.5px; color:var(--text-faint); margin-top:6px; display:flex; justify-content:space-between;}
+
+/* content area */
+#content{padding:24px 36px 60px 36px; flex:1;}
+
+.level-heading{
+  display:flex; align-items:baseline; gap:10px; margin-bottom:4px;
+}
+.level-heading h3{
+  font-family:var(--serif); font-size:21px; margin:0; color:var(--ink);
+}
+.level-heading .lvl-badge{
+  font-family:var(--mono); font-size:10.5px; padding:3px 8px; border-radius:20px;
+  text-transform:uppercase; letter-spacing:.04em; font-weight:700;
+}
+.badge-basic{background:var(--blue-soft); color:var(--blue);}
+.badge-basicplus{background:var(--teal-soft); color:var(--teal);}
+.badge-intermediate{background:var(--gold-soft); color:var(--gold);}
+.badge-intermediateplus{background:#EBE1F5; color:#6A3FA0;}
+.level-desc{font-size:13px; color:var(--text-soft); margin-bottom:20px; max-width:680px; line-height:1.5;}
+
+/* task cards */
+.task-card{
+  background:var(--paper-card);
+  border:1px solid var(--line);
+  border-radius:var(--radius-lg);
+  margin-bottom:18px;
+  overflow:hidden;
+}
+.task-card.completed{border-color:var(--teal);}
+.task-head{
+  display:flex; align-items:flex-start; gap:14px;
+  padding:18px 20px;
+  border-bottom:1px solid var(--line-soft);
+  cursor:pointer;
+}
+.task-checkbox{
+  width:22px; height:22px; border-radius:6px; border:2px solid var(--line);
+  flex-shrink:0; margin-top:2px; cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  background:#fff; transition:all .15s ease;
+}
+.task-checkbox.checked{background:var(--teal); border-color:var(--teal);}
+.task-checkbox svg{width:13px; height:13px; opacity:0;}
+.task-checkbox.checked svg{opacity:1;}
+.task-head-main{flex:1; min-width:0;}
+.task-eyebrow{
+  font-family:var(--mono); font-size:11px; color:var(--text-faint); letter-spacing:.03em;
+  display:flex; gap:10px; align-items:center; margin-bottom:4px; flex-wrap:wrap;
+}
+.task-eyebrow .weight-tag{
+  background:var(--paper); border:1px solid var(--line); padding:1px 7px; border-radius:20px;
+}
+.task-title{font-size:16px; font-weight:600; color:var(--ink); margin:0;}
+.task-toggle-icon{color:var(--text-faint); font-size:13px; margin-top:4px; transition:transform .2s ease;}
+.task-body{padding:0 20px 20px 20px; display:none;}
+.task-body.open{display:block;}
+.tb-section{margin-top:16px;}
+.tb-section h5{
+  font-size:10.5px; text-transform:uppercase; letter-spacing:.07em; color:var(--gold);
+  font-weight:700; margin:0 0 6px 0;
+}
+.tb-section p, .tb-section li{font-size:13.5px; line-height:1.6; color:var(--text); margin:0;}
+.tb-section ol, .tb-section ul{margin:0; padding-left:20px;}
+.tb-section li{margin-bottom:4px;}
+.tb-two-col{display:grid; grid-template-columns:1fr 1fr; gap:20px;}
+@media (max-width:900px){.tb-two-col{grid-template-columns:1fr;}}
+
+.answer-zone{
+  margin-top:18px; background:var(--paper); border:1px dashed var(--line); border-radius:10px; padding:16px;
+}
+.answer-zone h5{color:var(--navy);}
+.af-row{display:flex; align-items:center; gap:10px; margin-bottom:10px; flex-wrap:wrap;}
+.af-row label{font-size:12.5px; color:var(--text-soft); flex:1; min-width:220px;}
+.af-row input[type=text], .af-row input[type=number]{
+  border:1px solid var(--line); border-radius:7px; padding:7px 10px; font-size:13px; width:220px;
+  font-family:var(--mono); background:#fff;
+}
+.af-row input.correct{border-color:var(--teal); background:var(--teal-soft);}
+.af-row input.incorrect{border-color:var(--red); background:var(--red-soft);}
+.af-status{font-size:11px; font-weight:700; width:90px;}
+.af-status.ok{color:var(--teal);}
+.af-status.no{color:var(--red);}
+textarea.open-answer{
+  width:100%; min-height:100px; border:1px solid var(--line); border-radius:7px; padding:10px;
+  font-family:var(--sans); font-size:13px; resize:vertical; background:#fff;
+}
+.self-check-note{font-size:12px; color:var(--text-faint); margin-top:8px; font-style:italic;}
+.selfcheck-btn{
+  margin-top:6px; padding:8px 16px; border-radius:7px; border:1px solid var(--teal);
+  background:#fff; color:var(--teal); font-weight:600; font-size:12.5px; cursor:pointer;
+  font-family:var(--sans);
+}
+.selfcheck-btn.done{background:var(--teal); color:#fff;}
+
+.trainer-key{
+  margin-top:16px; border-top:1px solid var(--line); padding-top:14px;
+}
+.trainer-key-toggle{
+  display:inline-flex; align-items:center; gap:6px;
+  font-size:12px; font-weight:700; color:var(--red);
+  background:var(--red-soft); border:none; padding:7px 12px; border-radius:20px;
+  cursor:pointer; font-family:var(--sans);
+}
+.trainer-key-body{
+  display:none; margin-top:12px; background:#FBF6EC; border:1px solid var(--gold-soft);
+  border-radius:10px; padding:14px 16px;
+}
+.trainer-key-body.open{display:block;}
+.trainer-key-body h6{font-size:11px; text-transform:uppercase; letter-spacing:.05em; color:var(--gold); margin:10px 0 4px 0;}
+.trainer-key-body h6:first-child{margin-top:0;}
+.trainer-key-body p, .trainer-key-body li{font-size:13px; color:var(--ink-2); line-height:1.55; margin:0;}
+.trainer-key-body code{font-family:var(--mono); background:#fff; padding:1px 5px; border-radius:4px; border:1px solid #e6dcc4; font-size:12px;}
+
+/* dataset table */
+.dataset-panel{margin-bottom:26px;}
+.dataset-toolbar{display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; flex-wrap:wrap; gap:10px;}
+.dataset-toolbar input{
+  border:1px solid var(--line); border-radius:7px; padding:7px 12px; font-size:13px; width:240px; font-family:var(--sans);
+}
+table.data-table{
+  width:100%; border-collapse:collapse; font-size:12px; background:#fff;
+  border:1px solid var(--line); border-radius:10px; overflow:hidden;
+}
+table.data-table thead th{
+  background:var(--navy); color:#fff; text-align:left; padding:8px 10px;
+  position:sticky; top:0; font-weight:600; font-size:11px; letter-spacing:.02em; white-space:nowrap;
+}
+table.data-table tbody td{padding:7px 10px; border-bottom:1px solid var(--line-soft); white-space:nowrap; color:var(--text);}
+table.data-table tbody tr:nth-child(even){background:#FAFBFC;}
+table.data-table tbody tr:hover{background:var(--teal-soft);}
+.table-scroll{max-height:520px; overflow:auto; border-radius:10px;}
+.status-pill{padding:2px 8px; border-radius:20px; font-size:11px; font-weight:600;}
+.status-lulus{background:var(--teal-soft); color:var(--teal);}
+.status-tidak{background:var(--red-soft); color:var(--red);}
+
+/* final result */
+.result-hero{
+  background:linear-gradient(135deg, var(--navy) 0%, var(--ink) 100%);
+  border-radius:var(--radius-lg); color:#fff; padding:36px 40px; display:flex; align-items:center; gap:40px;
+  flex-wrap:wrap;
+}
+.result-score-ring{
+  width:140px; height:140px; border-radius:50%; flex-shrink:0;
+  display:flex; align-items:center; justify-content:center; flex-direction:column;
+  background:conic-gradient(var(--gold) calc(var(--pct,0)*1%), rgba(255,255,255,0.12) 0);
+  position:relative;
+}
+.result-score-ring::before{
+  content:""; position:absolute; inset:10px; border-radius:50%; background:var(--ink);
+}
+.result-score-ring .rs-val{position:relative; font-family:var(--mono); font-size:32px; font-weight:700;}
+.result-score-ring .rs-max{position:relative; font-size:11px; color:#AEB9CC;}
+.result-info h3{margin:0 0 6px 0; font-family:var(--serif); font-size:24px;}
+.result-info .rs-level{
+  display:inline-block; padding:4px 12px; border-radius:20px; font-size:12px; font-weight:700;
+  background:var(--gold); color:var(--ink); margin-bottom:10px;
+}
+.result-info p{color:#C7D0E0; font-size:13px; max-width:520px; line-height:1.6; margin:0;}
+
+.breakdown-table{width:100%; border-collapse:collapse; margin-top:22px;}
+.breakdown-table th{
+  text-align:left; font-size:10.5px; text-transform:uppercase; letter-spacing:.06em; color:var(--text-faint);
+  border-bottom:2px solid var(--line); padding:8px 10px;
+}
+.breakdown-table td{padding:9px 10px; border-bottom:1px solid var(--line-soft); font-size:13px;}
+.breakdown-table .bar-cell{width:200px;}
+.bar-track{height:7px; background:var(--line-soft); border-radius:8px; overflow:hidden;}
+.bar-fill{height:100%; background:var(--teal); border-radius:8px;}
+
+.strength-grid{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:22px;}
+@media (max-width:900px){.strength-grid{grid-template-columns:1fr;}}
+.sg-card{border-radius:12px; padding:18px 20px;}
+.sg-card.strength{background:var(--teal-soft); border:1px solid #bfe2d8;}
+.sg-card.dev{background:var(--gold-soft); border:1px solid #e9d3a1;}
+.sg-card h5{margin:0 0 8px 0; font-size:12px; text-transform:uppercase; letter-spacing:.06em;}
+.sg-card.strength h5{color:var(--teal);}
+.sg-card.dev h5{color:var(--gold);}
+.sg-card ul{margin:0; padding-left:18px; font-size:13px; line-height:1.6;}
+
+.recommend-list{margin-top:22px;}
+.recommend-list .rec-item{
+  display:flex; gap:12px; padding:12px 0; border-bottom:1px solid var(--line-soft); align-items:flex-start;
+}
+.rec-item .rec-num{
+  font-family:var(--mono); font-size:12px; color:#fff; background:var(--navy); width:24px; height:24px;
+  border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0;
+}
+.rec-item .rec-text{font-size:13.5px; line-height:1.5;}
+.rec-item .rec-text b{color:var(--ink);}
+
+.submit-bar{
+  margin-top:28px; padding:20px; border-radius:12px; background:var(--paper-card); border:1px solid var(--line);
+  display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;
+}
+.btn-primary{
+  background:var(--navy); color:#fff; border:none; padding:12px 24px; border-radius:8px;
+  font-weight:600; font-size:13.5px; cursor:pointer; font-family:var(--sans);
+}
+.btn-primary:hover{background:var(--ink);}
+.btn-secondary{
+  background:#fff; color:var(--text); border:1px solid var(--line); padding:11px 20px; border-radius:8px;
+  font-weight:600; font-size:13px; cursor:pointer; font-family:var(--sans);
+}
+.rubric-mini{font-size:12px; color:var(--text-faint);}
+
+/* rubric page section on final */
+.rubric-legend{display:flex; gap:14px; flex-wrap:wrap; margin-top:14px;}
+.rl-item{display:flex; align-items:center; gap:6px; font-size:12px; color:var(--text-soft);}
+.rl-dot{width:10px; height:10px; border-radius:3px;}
+
+footer.app-footer{
+  padding:20px 36px 40px 36px; font-size:11.5px; color:var(--text-faint); text-align:center;
+}
+
+@media (max-width:960px){
+  #sidebar{position:relative; height:auto; width:100%;}
+  #app{flex-direction:column;}
+  .participant-form{grid-template-columns:1fr 1fr;}
+  .dash-cards{grid-template-columns:1fr 1fr;}
+}
+
+/* ===== LOGIN OVERLAY ===== */
+#loginOverlay{
+  position:fixed; inset:0; z-index:9999;
+  background: radial-gradient(circle at 20% 20%, var(--navy-soft) 0%, var(--ink) 65%);
+  display:flex; align-items:center; justify-content:center;
+  padding:24px;
+}
+#loginOverlay.hidden{display:none;}
+.login-card{
+  background:var(--paper-card);
+  border-radius:var(--radius-lg);
+  width:100%; max-width:440px;
+  padding:34px 34px 28px 34px;
+  box-shadow:0 30px 60px rgba(0,0,0,0.35);
+}
+.login-eyebrow{
+  font-size:10.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--gold); font-weight:700; margin:0 0 6px 0;
+}
+.login-card h2{
+  font-family:var(--serif); font-size:23px; margin:0 0 6px 0; color:var(--ink);
+}
+.login-card .login-sub{
+  font-size:13px; color:var(--text-soft); line-height:1.5; margin-bottom:22px;
+}
+.login-field{margin-bottom:14px; display:flex; flex-direction:column; gap:5px;}
+.login-field label{font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:var(--text-faint); font-weight:700;}
+.login-field input, .login-field select{
+  border:1px solid var(--line); border-radius:8px; padding:11px 12px; font-size:14px;
+  font-family:var(--sans); color:var(--text); background:#fbfbfc;
+}
+.login-field input:focus, .login-field select:focus{outline:none; border-color:var(--navy); background:#fff;}
+.login-error{
+  font-size:12px; color:var(--red); margin:-4px 0 12px 0; display:none;
+}
+.login-error.show{display:block;}
+.login-btn{
+  width:100%; background:var(--navy); color:#fff; border:none; padding:13px 20px; border-radius:8px;
+  font-weight:700; font-size:14px; cursor:pointer; font-family:var(--sans); margin-top:6px;
+}
+.login-btn:hover{background:var(--ink);}
+.login-footnote{
+  font-size:11px; color:var(--text-faint); text-align:center; margin-top:16px; line-height:1.5;
+}
+.participant-locked input, .participant-locked select{
+  background:var(--paper) !important; color:var(--text-soft); cursor:not-allowed;
+}
+.logout-link{
+  display:block; margin-top:8px; font-size:11.5px; color:#8b96ab; cursor:pointer;
+  text-decoration:underline; text-underline-offset:2px;
+}
+.logout-link:hover{color:#fff;}
+.sync-indicator{
+  font-size:10.5px; color:var(--text-faint); display:flex; align-items:center; gap:5px; margin-top:6px; justify-content:flex-end;
+}
+.sync-dot{width:6px; height:6px; border-radius:50%; background:var(--teal);}
+.sync-dot.off{background:var(--text-faint);}
+</style>
+</head>
+<body>
+
+<!-- ===== LOGIN OVERLAY ===== -->
+<div id="loginOverlay">
+  <div class="login-card">
+    <p class="login-eyebrow">Corporate Learning &amp; Development</p>
+    <h2>Masuk untuk Memulai Assessment</h2>
+    <p class="login-sub">Practical Excel Assessment — Basic to Intermediate Level. Isi identitas Anda untuk memulai. Jawaban Anda akan tersimpan otomatis secara real-time.</p>
+    <div class="login-field">
+      <label>Nama Lengkap *</label>
+      <input type="text" id="loginName" placeholder="Nama sesuai data kepegawaian">
+    </div>
+    <div class="login-field">
+      <label>Employee ID *</label>
+      <input type="text" id="loginEmpId" placeholder="Contoh: EMP1001">
+    </div>
+    <div class="login-field">
+      <label>Divisi *</label>
+      <select id="loginDivisi">
+        <option value="">Pilih divisi</option>
+        <option>Finance</option>
+        <option>Human Resources</option>
+        <option>IT</option>
+        <option>Marketing</option>
+        <option>Operations</option>
+        <option>Sales</option>
+      </select>
+    </div>
+    <div class="login-error" id="loginError">Mohon lengkapi Nama, Employee ID, dan Divisi terlebih dahulu.</div>
+    <button class="login-btn" onclick="handleLogin()">Mulai Assessment</button>
+    <p class="login-footnote">Progress dan jawaban Anda tersimpan otomatis per task ke sistem pelaporan L&amp;D. Pastikan koneksi internet aktif selama pengerjaan.</p>
+  </div>
+</div>
+
+<div id="app">
+  <!-- ===== SIDEBAR ===== -->
+  <aside id="sidebar">
+    <div class="brand">
+      <p class="eyebrow">Corporate Learning &amp; Development</p>
+      <h1>Practical Excel<br>Assessment</h1>
+      <div class="sub">Basic to Intermediate Level</div>
+    </div>
+    <nav class="sections" id="navSections"></nav>
+    <div class="sidebar-footer">
+      <div class="mode-toggle">
+        <button class="mode-btn active" id="btnParticipantMode" onclick="setMode('participant')">Participant</button>
+        <button class="mode-btn" id="btnTrainerMode" onclick="setMode('trainer')">Trainer</button>
+      </div>
+      <div class="reset-link" onclick="resetAssessment()">Reset seluruh progress</div>
+      <div class="logout-link" onclick="handleLogout()">Ganti peserta / Logout</div>
+      <div class="sync-indicator" id="syncIndicator"><span class="sync-dot" id="syncDot"></span><span id="syncText">Tersimpan lokal</span></div>
+    </div>
+  </aside>
+
+  <!-- ===== MAIN ===== -->
+  <div id="main">
+    <header class="topbar">
+      <div class="topbar-title-row">
+        <div>
+          <h2>Practical Excel Assessment</h2>
+          <div class="desc">Simulasi pekerjaan nyata untuk mengukur kemampuan Excel Anda — dari input data dasar hingga PivotTable dan analisis bisnis. Kerjakan setiap task menggunakan Microsoft Excel di komputer Anda, lalu catat hasilnya di sini.</div>
+        </div>
+        <div class="timer-box">
+          <div class="t-label">Durasi Pengerjaan</div>
+          <div class="t-val" id="timerVal">00:00:00</div>
+          <div class="t-controls">
+            <button onclick="toggleTimer()" id="timerToggleBtn">Jeda</button>
+          </div>
+        </div>
+      </div>
+      <div class="participant-form">
+        <div class="pfield">
+          <label>Nama Peserta</label>
+          <input type="text" id="pName" placeholder="Nama lengkap" oninput="saveParticipant()">
+        </div>
+        <div class="pfield">
+          <label>Employee ID</label>
+          <input type="text" id="pEmpId" placeholder="EMP xxxx" oninput="saveParticipant()">
+        </div>
+        <div class="pfield">
+          <label>Divisi</label>
+          <select id="pDivisi" onchange="saveParticipant()">
+            <option value="">Pilih divisi</option>
+            <option>Finance</option>
+            <option>Human Resources</option>
+            <option>IT</option>
+            <option>Marketing</option>
+            <option>Operations</option>
+            <option>Sales</option>
+          </select>
+        </div>
+        <div class="pfield">
+          <label>Tanggal Assessment</label>
+          <input type="text" id="pDate" readonly>
+        </div>
+      </div>
+    </header>
+
+    <div class="dash-cards">
+      <div class="dcard">
+        <div class="dc-label">Total Task</div>
+        <div class="dc-val">20</div>
+      </div>
+      <div class="dcard teal">
+        <div class="dc-label">Completed</div>
+        <div class="dc-val" id="dcCompleted">0</div>
+      </div>
+      <div class="dcard">
+        <div class="dc-label">Remaining</div>
+        <div class="dc-val" id="dcRemaining">20</div>
+      </div>
+      <div class="dcard gold">
+        <div class="dc-label">Current Score</div>
+        <div class="dc-val"><span id="dcScore">0</span> <span style="font-size:14px;color:var(--text-faint);">/ 100</span></div>
+      </div>
+    </div>
+
+    <div class="progress-wrap">
+      <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+      <div class="progress-caption">
+        <span>Progress: <b id="progressLabel">0 / 20 Tasks</b></span>
+        <span id="progressPct">0%</span>
+      </div>
+    </div>
+
+    <main id="content"></main>
+
+    <footer class="app-footer">
+      Practical Excel Assessment · Corporate Learning &amp; Development · File ini berjalan sepenuhnya offline di browser Anda, data tersimpan lokal (localStorage).
+    </footer>
+  </div>
+</div>
+
+<script>
+window.DATASET = null;
+window.TASKS = null;
+</script>
+<script id="dataset-data">
+const DATASET = [{"id": "EMP1001", "nama": "Prita Wijaya", "divisi": "Finance", "jabatan": "Finance Analyst", "kategori": "Technical", "program": "Data Analysis Basics", "tanggal": "2026-04-23", "durasi": 6, "pre_test": 74, "post_test": 74, "target": 75, "status": "Tidak Lulus", "cert_berlaku_sd": "", "biaya": 1500000, "trainer": "Ibu Yuliana Putri", "kota": "Jakarta"}, {"id": "EMP1002", "nama": "Budi Wijaya", "divisi": "Human Resources", "jabatan": "HR Generalist", "kategori": "Sales & Service", "program": "Sales Fundamentals", "tanggal": "2025-01-08", "durasi": 4, "pre_test": 52, "post_test": 81, "target": 75, "status": "Lulus", "cert_berlaku_sd": "", "biaya": 900000, "trainer": "Denny Kusnadi", "kota": "Medan"}, {"id": "EMP1003", "nama": "Maman Santoso", "divisi": "Finance", "jabatan": "Senior Staff Finance", "kategori": "Soft Skill", "program": "Time Management", "tanggal": "2026-02-27", "durasi": 8, "pre_test": 53, "post_test": 69, "target": 75, "status": "Tidak Lulus", "cert_berlaku_sd": "", "biaya": 1200000, "trainer": "Bpk. Herman Wijaya", "kota": "Medan"}, {"id": "EMP1004", "nama": "Gita Hidayat", "divisi": "IT", "jabatan": "System Analyst", "kategori": "Leadership", "program": "Coaching for Managers", "tanggal": "2025-02-02", "durasi": 8, "pre_test": 47, "post_test": 66, "target": 75, "status": "Tidak Lulus", "cert_berlaku_sd": "", "biaya": 1200000, "trainer": "Lembaga Mitra Prima", "kota": "Makassar"}, {"id": "EMP1005", "nama": "Opik Handoko", "divisi": "IT", "jabatan": "Software Engineer", "kategori": "Leadership", "program": "Leadership Fundamentals", "tanggal": "2025-12-15", "durasi": 16, "pre_test": 58, "post_test": 58, "target": 75, "status": "Tidak Lulus", "cert_berlaku_sd": "", "biaya": 2800000, "trainer": "Bpk. Herman Wijaya", "kota": "Medan"}, {"id": "EMP1006", "nama": "Sari Setiawan", "divisi": "Sales", "jabatan": "Sales Supervisor", "kategori": "Technical", "program": "Basic SQL for Analyst", "tanggal": "2026-01-03", "durasi": 8, "pre_test": 57, "post_test": 56, "target": 75, "status": "Tidak Lulus", "cert_berlaku_sd": "", "biaya": 2000000, "trainer": "Ibu Sri Wahyuni", "kota": "Semarang"}, {"id": "EMP1007", "nama": "Vera Pratama", "divisi": "Human Resources", "jabatan": "HR Manager", "kategori": "Soft Skill", "program": "Time Management", "tanggal": "2025-01-12", "durasi": 16, "pre_test": 54, "post_test": 69, "target": 75, "status": "Tidak Lulus", "cert_berlaku_sd": "", "biaya": 2400000, "trainer": "Denny Kusnadi", "kota": "Jakarta"}, {"id": "EMP1008", "nama": "Vina Susanto", "divisi": "IT", "jabatan": "IT Support", "kategori": "Technical", "program": "Basic SQL for Analyst", "tanggal": "2025-03-12", "durasi": 6, "pre_test": 65, "post_test": 89, "target": 75, "status": "Lulus", "cert_berlaku_sd": "2026-03-12", "biaya": 1050000, "trainer": "Lembaga Mitra Prima", "kota": "Surabaya"}, {"id": "EMP1009", "nama": "Putri Ramadhan", "divisi": "Operations", "jabatan": "Operations Supervisor", "kategori": "Sales & Service", "program": "Negotiation Skills", "tanggal": "2025-06-23", "durasi": 16, "pre_test": 63, "post_test": 72, "target": 75, "status": "Tidak Lulus", "cert_berlaku_sd": "", "biaya": 2800000, "trainer": "Bpk. Arif Rahman", "kota": "Jakarta"}, {"id": "EMP1010", "nama": "Yanto Saputra", "divisi": "Finance", "jabatan": "Senior Staff Finance", "kategori": "Technical", "program": "Cybersecurity Awareness", "tanggal": "2026-06-01", "durasi": 16, "pre_test": 64, "post_test": 83, "target": 75, "status": "Lulus", "cert_berlaku_sd": "2027-06-01", "biaya": 4000000, "trainer": "Bpk. Arif Rahman", "kota": "Semarang"}, {"id": "EMP1011", "nama": "Rendra Nugroho", "divisi": "Finance", "jabatan": "Staff Finance", "kategori": "Sales & Service", "program": "Negotiation Skills", "tanggal": "2025-08-22", "durasi": 24, "pre_test": 47, "post_test": 60, "target": 75, "status": "Tidak Lulus", "cert_berlaku_sd": "", "biaya": 5400000, "trainer": "Ibu Sri Wahyuni", "kota": "Medan"}, {"id": "EMP1012", "nama": "Andi Ramadhan", "divisi": "Sales", "jabatan": "Sales Supervisor", "kategori": "Sales & Service", "program": "Customer Service Excellence", "tanggal": "2026-04-19", "durasi": 16, "pre_test": 59, "post_test": 94, "target": 75, "status": "Lulus", "cert_berlaku_sd": "", "biaya": 4000000, "trainer": "Denny Kusnadi", "kota": "Surabaya"}, {"id": "EMP1013", "nama": "Yusuf Putra", "divisi": "Human Resources", "jabatan": "HR Staff", "kategori": "Sales & Service", "program": "Negotiation Skills", "tanggal": "2026-07-17", "durasi": 8, "pre_test": 47, "post_test": 65, "target": 75, "status": "Tidak Lulus", "cert_berlaku_sd": "", "biaya": 1600000, "trainer": "Denny Kusnadi", "kota": "Jakarta"}, {"id": "EMP1014", "nama": "Putri Handoko", "divisi": "Operations", "jabatan": "Operations Staff", "kategori": "Leadership", "program": "Coaching for Managers", "tanggal": "2026-05-27", "durasi": 8, "pre_test": 74, "post_test": 77, "target": 75, "status": "Lulus", "cert_berlaku_sd": "", "biaya": 1400000, "trainer": "Bpk. Arif Rahman", "kota": "Semarang"}, {"id": "EMP1015", "nama": "Kartika Santoso", "divisi": "Operations", "jabatan": "Operations Manager", "kategori": "Technical", "program": "Data Analysis Basics", "tanggal": "2025-09-20", "durasi": 16, "pre_test": 65, "post_test": 83, "target": 75, "status": "Lulus", "cert_berlaku_sd": "2026-09-20", "biaya": 3600000, "trainer": "Bpk. Arif Rahman", "kota": "Jakarta"}, {"id": "EMP1016", "nama": "Putri Pratama", "divisi": "Finance", "jabatan": "Finance Analyst", "kategori": "Leadership", "program": "Coaching for Managers", "tanggal": "2025-12-13", "durasi": 16, "pre_test": 54, "post_test": 49, "target": 75, "status": "Tidak Lulus", "cert_berlaku_sd": "", "biaya": 2400000, "trainer": "Rina Marlina", "kota": "Surabaya"}, {"id": "EMP1017", "nama": "Eka Handoko", "divisi": "Finance", "jabatan": "Finance Analyst", "kategori": "Leadership", "program": "Coaching for Managers", "tanggal": "2025-10-24", "durasi": 6, "pre_test": 71, "post_test": 79, "target": 75, "status": "Lulus", "cert_berlaku_sd": "", "biaya": 1500000, "trainer": "Ibu Sri Wahyuni", "kota": "Makassar"}, {"id": "EMP1018", "nama": "Lina Wahyudi", "divisi": "Marketing", "jabatan": "Digital Marketing Specialist", "kategori": "Soft Skill", "program": "Time Management", "tanggal": "2026-05-01", "durasi": 6, "pre_test": 46, "post_test": 68, "target": 75, "status": "Tidak Lulus", "cert_berlaku_sd": "", "biaya": 1200000, "trainer": "Ibu Yuliana Putri", "kota": "Medan"}, {"id": "EMP1019", "nama": "Erik Kusuma", "divisi": "Sales", "jabatan": "Sales Executive", "kategori": "Leadership", "program": "Leadership Fundamentals", "tanggal": "2025-08-23", "durasi": 8, "pre_test": 46, "post_test": 56, "target": 75, "status": "Tidak Lulus", "cert_berlaku_sd": "", "biaya": 1400000, "trainer": "Denny Kusnadi", "kota": "Semarang"}, {"id": "EMP1020", "nama": "Dian Kurniawan", "divisi": "Marketing", "jabatan": "Digital Marketing Specialist", "kategori": "Compliance", "program": "Data Privacy Compliance", "tanggal": "2026-05-20", "durasi": 6, "pre_test": 68, "post_test": 98, "target": 75, "status": "Lulus", "cert_berlaku_sd": "2027-05-20", "biaya": 900000, "trainer": "Rina Marlina", "kota": "Makassar"}, {"id": "EMP1021", "nama": "Julia Kusuma", "divisi": "Finance", "jabatan": "Staff Finance", "kategori": "Technical", "program": "Data Analysis Basics", "tanggal": "2025-03-26", "durasi": 8, "pre_test": 70, "post_test": 78, "target": 75, "status": "Lulus", "cert_berlaku_sd": "2026-03-26", "biaya": 1800000, "trainer": "Rina Marlina", "kota": "Surabaya"}, {"id": "EMP1022", "nama": "Zahra Saputra", "divisi": "Marketing", "jabatan": "Brand Executive", "kategori": "Soft Skill", "program": "Time Management", "tanggal": "2025-01-13", "durasi": 8, "pre_test": 71, "post_test": 75, "target": 75, "status": "Lulus", "cert_berlaku_sd": "", "biaya": 1400000, "trainer": "Lembaga Mitra Prima", "kota": "Surabaya"}, {"id": "EMP1023", "nama": "Dewi Wahyudi", "divisi": "Sales", "jabatan": "Sales Executive", "kategori": "Compliance", "program": "Anti Fraud & Ethics", "tanggal": "2024-12-15", "durasi": 4, "pre_test": 70, "post_test": 97, "target": 75, "status": "Lulus", "cert_berlaku_sd": "2025-12-15", "biaya": 1000000, "trainer": "Ibu Sri Wahyuni", "kota": "Jakarta"}, {"id": "EMP1024", "nama": "Hana Wijaya", "divisi": "Human Resources", "jabatan": "HR Staff", "kategori": "Sales & Service", "program": "Customer Service Excellence", "tanggal": "2025-12-08", "durasi": 16, "pre_test": 65, "post_test": 67, "target": 75, "status": "Tidak Lulus", "cert_berlaku_sd": "", "biaya": 4000000, "trainer": "Denny Kusnadi", "kota": "Semarang"}, {"id": "EMP1025", "nama": "Nurul Saputra", "divisi": "Operations", "jabatan": "Operations Staff", "kategori": "Soft Skill", "program": "Problem Solving & Decision Making", "tanggal": "2025-01-04", "durasi": 16, "pre_test": 73, "post_test": 88, "target": 75, "status": "Lulus", "cert_berlaku_sd": "", "biaya": 3200000, "trainer": "Denny Kusnadi", "kota": "Makassar"}, {"id": "EMP1026", "nama": "Utami Hidayat", "divisi": "Human Resources", "jabatan": "HR Business Partner", "kategori": "Soft Skill", "program": "Effective Communication", "tanggal": "2025-10-02", "durasi": 16, "pre_test": 69, "post_test": 84, "target": 75, "status": "Lulus", "cert_berlaku_sd": "", "biaya": 2400000, "trainer": "Rina Marlina", "kota": "Medan"}, {"id": "EMP1027", "nama": "Opik Wahyudi", "divisi": "Finance", "jabatan": "Staff Finance", "kategori": "Sales & Service", "program": "Customer Service Excellence", "tanggal": "2025-11-07", "durasi": 16, "pre_test": 48, "post_test": 65, "target": 75, "status": "Tidak Lulus", "cert_berlaku_sd": "", "biaya": 2400000, "trainer": "Denny Kusnadi", "kota": "Bandung"}, {"id": "EMP1028", "nama": "Tono Kurniawan", "divisi": "Marketing", "jabatan": "Brand Executive", "kategori": "Sales & Service", "program": "Sales Fundamentals", "tanggal": "2026-07-28", "durasi": 16, "pre_test": 75, "post_test": 89, "target": 75, "status": "Lulus", "cert_berlaku_sd": "", "biaya": 2400000, "trainer": "Ibu Sri Wahyuni", "kota": "Bandung"}, {"id": "EMP1029", "nama": "Hendra Handoko", "divisi": "Finance", "jabatan": "Senior Staff Finance", "kategori": "Compliance", "program": "Data Privacy Compliance", "tanggal": "2026-01-02", "durasi": 16, "pre_test": 61, "post_test": 69, "target": 75, "status": "Tidak Lulus", "cert_berlaku_sd": "", "biaya": 3200000, "trainer": "Bpk. Arif Rahman", "kota": "Bandung"}, {"id": "EMP1030", "nama": "Dewi Wijaya", "divisi": "Sales", "jabatan": "Sales Manager", "kategori": "Compliance", "program": "Anti Fraud & Ethics", "tanggal": "2025-08-29", "durasi": 4, "pre_test": 48, "post_test": 83, "target": 75, "status": "Lulus", "cert_berlaku_sd": "2026-08-29", "biaya": 800000, "trainer": "Ibu Sri Wahyuni", "kota": "Makassar"}, {"id": "EMP1031", "nama": "Dian Nugroho", "divisi": "Sales", "jabatan": "Sales Manager", "kategori": "Sales & Service", "program": "Customer Service Excellence", "tanggal": "2026-05-20", "durasi": 4, "pre_test": 49, "post_test": 78, "target": 75, "status": "Lulus", "cert_berlaku_sd": "", "biaya": 600000, "trainer": "Internal L&D Team", "kota": "Semarang"}, {"id": "EMP1032", "nama": "Krisna Kurniawan", "divisi": "Marketing", "jabatan": "Digital Marketing Specialist", "kategori": "Leadership", "program": "People Management Essentials", "tanggal": "2026-06-26", "durasi": 8, "pre_test": 62, "post_test": 70, "target": 75, "status": "Tidak Lulus", "cert_berlaku_sd": "", "biaya": 1400000, "trainer": "Bpk. Herman Wijaya", "kota": "Bandung"}, {"id": "EMP1033", "nama": "Zaki Nugroho", "divisi": "Marketing", "jabatan": "Digital Marketing Specialist", "kategori": "Technical", "program": "Data Analysis Basics", "tanggal": "2026-02-05", "durasi": 24, "pre_test": 66, "post_test": 62, "target": 75, "status": "Tidak Lulus", "cert_berlaku_sd": "", "biaya": 4200000, "trainer": "Internal L&D Team", "kota": "Medan"}, {"id": "EMP1034", "nama": "Rahmat Kusuma", "divisi": "Sales", "jabatan": "Account Manager", "kategori": "Compliance", "program": "Anti Fraud & Ethics", "tanggal": "2026-04-17", "durasi": 24, "pre_test": 64, "post_test": 61, "target": 75, "status": "Tidak Lulus", "cert_berlaku_sd": "", "biaya": 5400000, "trainer": "Denny Kusnadi", "kota": "Surabaya"}, {"id": "EMP1035", "nama": "Erik Hidayat", "divisi": "IT", "jabatan": "Software Engineer", "kategori": "Technical", "program": "Excel for Business", "tanggal": "2026-01-20", "durasi": 16, "pre_test": 65, "post_test": 81, "target": 75, "status": "Lulus", "cert_berlaku_sd": "2027-01-20", "biaya": 3200000, "trainer": "Bpk. Herman Wijaya", "kota": "Bandung"}, {"id": "EMP1036", "nama": "Xena Firmansyah", "divisi": "Operations", "jabatan": "Operations Manager", "kategori": "Sales & Service", "program": "Negotiation Skills", "tanggal": "2026-04-09", "durasi": 4, "pre_test": 56, "post_test": 62, "target": 75, "status": "Tidak Lulus", "cert_berlaku_sd": "", "biaya": 1000000, "trainer": "Lembaga Mitra Prima", "kota": "Jakarta"}, {"id": "EMP1037", "nama": "Gita Wahyudi", "divisi": "Marketing", "jabatan": "Brand Executive", "kategori": "Compliance", "program": "Data Privacy Compliance", "tanggal": "2025-02-28", "durasi": 16, "pre_test": 47, "post_test": 66, "target": 75, "status": "Tidak Lulus", "cert_berlaku_sd": "", "biaya": 4000000, "trainer": "Denny Kusnadi", "kota": "Bandung"}, {"id": "EMP1038", "nama": "Citra Ramadhan", "divisi": "Marketing", "jabatan": "Marketing Staff", "kategori": "Sales & Service", "program": "Sales Fundamentals", "tanggal": "2026-01-16", "durasi": 16, "pre_test": 63, "post_test": 85, "target": 75, "status": "Lulus", "cert_berlaku_sd": "", "biaya": 2400000, "trainer": "Internal L&D Team", "kota": "Semarang"}, {"id": "EMP1039", "nama": "Vina Firmansyah", "divisi": "Finance", "jabatan": "Finance Analyst", "kategori": "Sales & Service", "program": "Negotiation Skills", "tanggal": "2025-06-13", "durasi": 16, "pre_test": 60, "post_test": 80, "target": 75, "status": "Lulus", "cert_berlaku_sd": "", "biaya": 3200000, "trainer": "Ibu Sri Wahyuni", "kota": "Surabaya"}, {"id": "EMP1040", "nama": "Bella Firmansyah", "divisi": "Marketing", "jabatan": "Digital Marketing Specialist", "kategori": "Sales & Service", "program": "Sales Fundamentals", "tanggal": "2025-06-16", "durasi": 8, "pre_test": 75, "post_test": 70, "target": 75, "status": "Tidak Lulus", "cert_berlaku_sd": "", "biaya": 1600000, "trainer": "Lembaga Mitra Prima", "kota": "Surabaya"}, {"id": "EMP1041", "nama": "Cahyo Putra", "divisi": "Operations", "jabatan": "Operations Supervisor", "kategori": "Soft Skill", "program": "Time Management", "tanggal": "2025-12-30", "durasi": 8, "pre_test": 72, "post_test": 97, "target": 75, "status": "Lulus", "cert_berlaku_sd": "", "biaya": 1400000, "trainer": "Bpk. Herman Wijaya", "kota": "Bandung"}, {"id": "EMP1042", "nama": "Hana Firmansyah", "divisi": "Sales", "jabatan": "Sales Supervisor", "kategori": "Leadership", "program": "Leadership Fundamentals", "tanggal": "2025-09-22", "durasi": 16, "pre_test": 54, "post_test": 61, "target": 75, "status": "Tidak Lulus", "cert_berlaku_sd": "", "biaya": 2800000, "trainer": "Rina Marlina", "kota": "Jakarta"}, {"id": "EMP1043", "nama": "Putri Setiawan", "divisi": "Operations", "jabatan": "Operations Staff", "kategori": "Soft Skill", "program": "Time Management", "tanggal": "2024-12-24", "durasi": 16, "pre_test": 52, "post_test": 71, "target": 75, "status": "Tidak Lulus", "cert_berlaku_sd": "", "biaya": 3600000, "trainer": "Ibu Yuliana Putri", "kota": "Surabaya"}, {"id": "EMP1044", "nama": "Joko Firmansyah", "divisi": "Sales", "jabatan": "Sales Executive", "kategori": "Leadership", "program": "People Management Essentials", "tanggal": "2026-02-06", "durasi": 6, "pre_test": 73, "post_test": 97, "target": 75, "status": "Lulus", "cert_berlaku_sd": "", "biaya": 900000, "trainer": "Denny Kusnadi", "kota": "Jakarta"}, {"id": "EMP1045", "nama": "Erik Kurniawan", "divisi": "Marketing", "jabatan": "Brand Executive", "kategori": "Soft Skill", "program": "Problem Solving & Decision Making", "tanggal": "2025-03-07", "durasi": 24, "pre_test": 67, "post_test": 97, "target": 75, "status": "Lulus", "cert_berlaku_sd": "", "biaya": 5400000, "trainer": "Ibu Sri Wahyuni", "kota": "Makassar"}, {"id": "EMP1046", "nama": "Fitri Setiawan", "divisi": "IT", "jabatan": "Software Engineer", "kategori": "Compliance", "program": "Workplace Safety (K3)", "tanggal": "2025-12-04", "durasi": 8, "pre_test": 57, "post_test": 80, "target": 75, "status": "Lulus", "cert_berlaku_sd": "2026-12-04", "biaya": 1200000, "trainer": "Lembaga Mitra Prima", "kota": "Surabaya"}, {"id": "EMP1047", "nama": "Sari Hidayat", "divisi": "IT", "jabatan": "IT Support", "kategori": "Technical", "program": "Data Analysis Basics", "tanggal": "2025-07-09", "durasi": 6, "pre_test": 49, "post_test": 57, "target": 75, "status": "Tidak Lulus", "cert_berlaku_sd": "", "biaya": 900000, "trainer": "Ibu Yuliana Putri", "kota": "Medan"}, {"id": "EMP1048", "nama": "Wawan Nugroho", "divisi": "Marketing", "jabatan": "Marketing Manager", "kategori": "Leadership", "program": "Leadership Fundamentals", "tanggal": "2025-06-01", "durasi": 24, "pre_test": 64, "post_test": 96, "target": 75, "status": "Lulus", "cert_berlaku_sd": "", "biaya": 3600000, "trainer": "Ibu Yuliana Putri", "kota": "Medan"}, {"id": "EMP1049", "nama": "Andi Hidayat", "divisi": "IT", "jabatan": "IT Manager", "kategori": "Soft Skill", "program": "Problem Solving & Decision Making", "tanggal": "2025-01-23", "durasi": 16, "pre_test": 54, "post_test": 80, "target": 75, "status": "Lulus", "cert_berlaku_sd": "", "biaya": 2800000, "trainer": "Lembaga Mitra Prima", "kota": "Medan"}, {"id": "EMP1050", "nama": "Gunawan Saputra", "divisi": "Marketing", "jabatan": "Brand Executive", "kategori": "Soft Skill", "program": "Problem Solving & Decision Making", "tanggal": "2025-04-14", "durasi": 6, "pre_test": 48, "post_test": 82, "target": 75, "status": "Lulus", "cert_berlaku_sd": "", "biaya": 1500000, "trainer": "Rina Marlina", "kota": "Medan"}, {"id": "EMP1051", "nama": "Maman Wahyudi", "divisi": "Sales", "jabatan": "Sales Executive", "kategori": "Leadership", "program": "Coaching for Managers", "tanggal": "2026-03-20", "durasi": 8, "pre_test": 69, "post_test": 75, "target": 75, "status": "Lulus", "cert_berlaku_sd": "", "biaya": 1200000, "trainer": "Lembaga Mitra Prima", "kota": "Medan"}, {"id": "EMP1052", "nama": "Vina Pratama", "divisi": "Marketing", "jabatan": "Brand Executive", "kategori": "Compliance", "program": "Data Privacy Compliance", "tanggal": "2025-05-31", "durasi": 8, "pre_test": 56, "post_test": 56, "target": 75, "status": "Tidak Lulus", "cert_berlaku_sd": "", "biaya": 1800000, "trainer": "Rina Marlina", "kota": "Makassar"}, {"id": "EMP1053", "nama": "Julia Saputra", "divisi": "IT", "jabatan": "Software Engineer", "kategori": "Leadership", "program": "Coaching for Managers", "tanggal": "2026-07-05", "durasi": 4, "pre_test": 55, "post_test": 62, "target": 75, "status": "Tidak Lulus", "cert_berlaku_sd": "", "biaya": 600000, "trainer": "Ibu Sri Wahyuni", "kota": "Surabaya"}, {"id": "EMP1054", "nama": "Indah Setiawan", "divisi": "Sales", "jabatan": "Sales Executive", "kategori": "Sales & Service", "program": "Customer Service Excellence", "tanggal": "2025-11-16", "durasi": 8, "pre_test": 63, "post_test": 68, "target": 75, "status": "Tidak Lulus", "cert_berlaku_sd": "", "biaya": 2000000, "trainer": "Bpk. Herman Wijaya", "kota": "Surabaya"}, {"id": "EMP1055", "nama": "Umar Wijaya", "divisi": "Operations", "jabatan": "Operations Staff", "kategori": "Compliance", "program": "Workplace Safety (K3)", "tanggal": "2025-07-17", "durasi": 16, "pre_test": 65, "post_test": 72, "target": 75, "status": "Tidak Lulus", "cert_berlaku_sd": "", "biaya": 2400000, "trainer": "Denny Kusnadi", "kota": "Jakarta"}, {"id": "EMP1056", "nama": "Taufik Putra", "divisi": "IT", "jabatan": "IT Support", "kategori": "Sales & Service", "program": "Customer Service Excellence", "tanggal": "2025-02-06", "durasi": 8, "pre_test": 67, "post_test": 85, "target": 75, "status": "Lulus", "cert_berlaku_sd": "", "biaya": 1200000, "trainer": "Internal L&D Team", "kota": "Jakarta"}, {"id": "EMP1057", "nama": "Bella Kusuma", "divisi": "Marketing", "jabatan": "Marketing Staff", "kategori": "Soft Skill", "program": "Time Management", "tanggal": "2025-04-22", "durasi": 16, "pre_test": 49, "post_test": 71, "target": 75, "status": "Tidak Lulus", "cert_berlaku_sd": "", "biaya": 2800000, "trainer": "Lembaga Mitra Prima", "kota": "Semarang"}, {"id": "EMP1058", "nama": "Julia Putra", "divisi": "Marketing", "jabatan": "Marketing Manager", "kategori": "Soft Skill", "program": "Problem Solving & Decision Making", "tanggal": "2025-11-04", "durasi": 16, "pre_test": 60, "post_test": 70, "target": 75, "status": "Tidak Lulus", "cert_berlaku_sd": "", "biaya": 2400000, "trainer": "Lembaga Mitra Prima", "kota": "Medan"}, {"id": "EMP1059", "nama": "Putri Putra", "divisi": "Marketing", "jabatan": "Marketing Manager", "kategori": "Compliance", "program": "Anti Fraud & Ethics", "tanggal": "2025-09-07", "durasi": 8, "pre_test": 51, "post_test": 77, "target": 75, "status": "Lulus", "cert_berlaku_sd": "2026-09-07", "biaya": 1400000, "trainer": "Internal L&D Team", "kota": "Bandung"}, {"id": "EMP1060", "nama": "Wawan Santoso", "divisi": "Operations", "jabatan": "Operations Supervisor", "kategori": "Sales & Service", "program": "Customer Service Excellence", "tanggal": "2026-01-22", "durasi": 16, "pre_test": 45, "post_test": 55, "target": 75, "status": "Tidak Lulus", "cert_berlaku_sd": "", "biaya": 3600000, "trainer": "Bpk. Arif Rahman", "kota": "Semarang"}];
+</script>
+<script id="tasks-data">
+const TASKS = [{"id": 1, "level": "Basic", "levelKey": "basic", "category": "Data Entry & Formatting", "weight": 3, "title": "Input Data & Navigasi Worksheet", "skill": "Memahami workbook, worksheet, row, column, cell, range; input dan editing data; copy, paste, fill series.", "context": "Anda baru bergabung sebagai Training Admin di divisi Learning & Development. Tim Anda meminta Anda menyalin dataset mentah 'Data Pelatihan & Sertifikasi Karyawan' (60 baris) ke dalam workbook kerja Anda dan menyiapkannya untuk diolah.", "instructions": ["Buat workbook baru dan beri nama sheet pertama 'Data Pelatihan'.", "Salin seluruh dataset yang disediakan (60 baris, 16 kolom) ke sheet tersebut mulai dari cell A1.", "Pastikan baris pertama berisi header kolom (ID Pegawai, Nama, Divisi, dst).", "Gunakan fitur Fill Series untuk membuat kolom bantu 'No' berisi nomor urut 1 sampai 60 di kolom A (geser data ke kanan satu kolom jika perlu).", "Rapikan lebar kolom (AutoFit Column Width) agar seluruh data terbaca jelas."], "input": "Dataset 'Data Pelatihan & Sertifikasi Karyawan' pada tab Dataset di aplikasi ini (60 baris).", "expectedOutput": "Sheet 'Data Pelatihan' berisi seluruh data dengan kolom nomor urut 1-60 dan lebar kolom yang rapi.", "acceptance": "Semua 60 baris data tersalin lengkap tanpa terpotong; kolom No berurutan 1-60 tanpa loncat; tidak ada kolom yang terlalu sempit sehingga data tampil sebagai '###'.", "type": "self", "answerKey": {"formula": "Tidak ada formula wajib. Gunakan Fill Handle (drag) atau Fill > Series > Column, Step value 1, Stop value 60.", "expected": "Kolom No terisi 1,2,3,...,60 tanpa terputus.", "steps": ["Ketik 1 di baris pertama, 2 di baris kedua", "Blok kedua cell, drag fill handle ke bawah sampai baris 60", "Atau gunakan Home > Fill > Series"], "mistakes": ["Fill series berhenti di tengah karena drag terlalu cepat", "Header ikut ternomori", "Lupa AutoFit sehingga data terpotong tampilannya"]}}, {"id": 2, "level": "Basic", "levelKey": "basic", "category": "Data Entry & Formatting", "weight": 3, "title": "Formatting Angka, Tanggal, Currency & Percentage", "skill": "Format angka, format tanggal, format currency/accounting, format percentage, alignment, border, font.", "context": "Manajer L&D akan mempresentasikan data ini ke Head of HR. Data harus terlihat rapi dan profesional sebelum ditampilkan, bukan berupa angka mentah.", "instructions": ["Format kolom 'Tanggal Pelatihan' menjadi format tanggal Indonesia, contoh: 23 April 2026.", "Format kolom 'Biaya Pelatihan' menjadi format Currency Rupiah (Rp) dengan pemisah ribuan, tanpa desimal.", "Buat kolom baru 'Rasio Kenaikan Nilai' = (Nilai Post-Test - Nilai Pre-Test) / Nilai Pre-Test, lalu format sebagai Percentage dengan 1 angka desimal.", "Beri border pada seluruh tabel dan bold pada baris header.", "Terapkan alignment: teks rata kiri, angka rata kanan, header rata tengah."], "input": "Sheet 'Data Pelatihan' hasil Task 1.", "expectedOutput": "Tabel dengan format tanggal, currency, dan percentage yang konsisten di seluruh baris, header bold dan tabel berborder.", "acceptance": "Format diterapkan ke seluruh 60 baris (bukan hanya baris pertama); nilai currency tampil 'Rp1.500.000' bukan '1500000'; percentage tampil dengan tanda % dan 1 desimal.", "type": "self", "answerKey": {"formula": "Rasio Kenaikan Nilai = (PostTest-PreTest)/PreTest, lalu Format Cells > Percentage, 1 decimal.", "expected": "Format currency contoh: Rp2.000.000 (bukan 2000000); format tanggal contoh: 03 Januari 2026.", "steps": ["Select kolom Biaya, Ctrl+1 > Number > Accounting/Currency", "Select kolom Tanggal, Ctrl+1 > Date > pilih locale Indonesian", "Select kolom Rasio, Ctrl+1 > Percentage, 1 desimal"], "mistakes": ["Format hanya diterapkan ke satu cell, bukan satu kolom penuh", "Menulis 'Rp' manual sebagai teks alih-alih format angka", "Salah urutan pembagian pada rasio kenaikan"]}}, {"id": 3, "level": "Basic", "levelKey": "basic", "category": "Formula Basic", "weight": 10, "title": "Formula Dasar: SUM, AVERAGE, MIN, MAX, COUNT, COUNTA, ROUND", "skill": "SUM, AVERAGE, MIN, MAX, COUNT, COUNTA, ROUND.", "context": "Head of L&D meminta ringkasan cepat dari seluruh program pelatihan tahun ini sebelum rapat anggaran: total biaya, rata-rata nilai, nilai tertinggi/terendah, dan jumlah peserta.", "instructions": ["Di area ringkasan (misalnya sheet baru 'Ringkasan'), hitung Total Biaya seluruh pelatihan menggunakan SUM.", "Hitung Rata-rata Nilai Post-Test seluruh peserta menggunakan AVERAGE, bulatkan 2 angka desimal menggunakan ROUND.", "Hitung Nilai Post-Test Tertinggi menggunakan MAX dan Nilai Post-Test Terendah menggunakan MIN.", "Hitung Jumlah Peserta menggunakan COUNT pada kolom nilai, dan Jumlah Baris Terisi menggunakan COUNTA pada kolom Nama.", "Pastikan seluruh hasil menggunakan formula (bukan angka hasil hitung manual)."], "input": "Kolom Biaya Pelatihan dan Nilai Post-Test pada sheet 'Data Pelatihan' (60 baris).", "expectedOutput": "5 angka ringkasan: Total Biaya, Rata-rata Nilai, Nilai Tertinggi, Nilai Terendah, Jumlah Peserta — seluruhnya dihasilkan dari formula.", "acceptance": "Nilai yang dihasilkan formula harus sama persis dengan hasil perhitungan aktual dataset; cell menggunakan formula, bukan hasil ketik manual.", "type": "auto_number", "fields": [{"key": "total_biaya", "label": "Total Biaya Pelatihan (Rp) — SUM", "expected": 136350000, "tolerance": 0}, {"key": "avg_post", "label": "Rata-rata Nilai Post-Test (2 desimal) — AVERAGE + ROUND", "expected": 74.42, "tolerance": 0.05}, {"key": "max_post", "label": "Nilai Post-Test Tertinggi — MAX", "expected": 98, "tolerance": 0}, {"key": "min_post", "label": "Nilai Post-Test Terendah — MIN", "expected": 49, "tolerance": 0}, {"key": "count_all", "label": "Jumlah Peserta — COUNT/COUNTA", "expected": 60, "tolerance": 0}], "answerKey": {"formula": "=SUM(range Biaya) | =ROUND(AVERAGE(range Post-Test),2) | =MAX(range Post-Test) | =MIN(range Post-Test) | =COUNT(range Post-Test) atau =COUNTA(range Nama)", "expected": "Total Biaya=Rp136.350.000, Rata-rata=74.42, Max=98, Min=49, Jumlah Peserta=60", "steps": ["Blok range kolom Biaya lalu =SUM(range)", "Gunakan ROUND(AVERAGE(range),2) untuk rata-rata 2 desimal", "MAX dan MIN langsung terhadap range Nilai Post-Test", "COUNT menghitung sel berisi angka, COUNTA menghitung sel berisi apa pun termasuk teks"], "mistakes": ["Range tidak mencakup baris ke-60 (terpotong di baris 59)", "Menggunakan COUNT pada kolom Nama (teks) yang hasilnya 0", "Lupa ROUND sehingga desimal terlalu panjang", "Memasukkan header ikut dihitung dalam SUM/AVERAGE"]}}, {"id": 4, "level": "Basic+", "levelKey": "basicplus", "category": "Data Entry & Formatting", "weight": 4, "title": "Sort & Filter Data Peserta", "skill": "Sort, Filter, Find & Replace.", "context": "Tim HR ingin melihat daftar pelatihan diurutkan dan hanya menampilkan data yang relevan untuk laporan divisi tertentu.", "instructions": ["Urutkan (Sort) data berdasarkan kolom Divisi (A-Z), lalu berdasarkan Nilai Post-Test (tertinggi ke terendah) sebagai kriteria kedua.", "Aktifkan Filter pada seluruh header tabel.", "Gunakan Filter untuk menampilkan hanya baris dengan Divisi = 'Marketing'.", "Catat berapa jumlah baris yang tersisa setelah filter diterapkan (lihat status bar Excel).", "Gunakan Find & Replace untuk mengganti seluruh kategori program 'Soft Skill' menjadi 'Soft Skills' pada kolom Kategori."], "input": "Sheet 'Data Pelatihan' (60 baris).", "expectedOutput": "Data terurut per Divisi lalu per Nilai Post-Test tertinggi; filter aktif dengan tampilan hanya divisi Marketing.", "acceptance": "Setelah filter Divisi=Marketing diterapkan, jumlah baris yang tampil sesuai dataset; label kategori 'Soft Skill' sudah terganti seluruhnya menjadi 'Soft Skills'.", "type": "auto_number", "fields": [{"key": "count_marketing", "label": "Jumlah baris setelah filter Divisi = Marketing", "expected": 16, "tolerance": 0}], "answerKey": {"formula": "Data > Sort (Divisi A-Z, lalu Nilai Post-Test Largest to Smallest) → Data > Filter → pilih 'Marketing' pada kolom Divisi.", "expected": "Jumlah baris Marketing = 16", "steps": ["Data > Sort > Add Level untuk 2 kriteria", "Data > Filter, klik dropdown Divisi, centang hanya Marketing", "Lihat jumlah baris di status bar kanan bawah"], "mistakes": ["Sort hanya berdasarkan satu kolom sehingga urutan nilai di dalam divisi tidak rapi", "Filter diterapkan sebelum header di-lock sehingga header ikut terfilter", "Find & Replace terlalu luas sehingga mengubah teks lain yang tidak dimaksud"]}}, {"id": 5, "level": "Basic+", "levelKey": "basicplus", "category": "Formula Basic", "weight": 5, "title": "Freeze Panes & Page Setup untuk Cetak", "skill": "Freeze Panes, basic print/page setup.", "context": "Laporan ini akan dicetak untuk dibagikan pada rapat mingguan tim L&D. Data yang panjang membuat header sulit terbaca saat scroll, dan perlu disiapkan agar rapi saat dicetak.", "instructions": ["Aktifkan Freeze Panes tepat di bawah baris header agar header tetap terlihat saat scroll ke bawah.", "Atur Page Layout ke orientasi Landscape.", "Atur Print Area agar hanya mencakup tabel data (tanpa kolom/baris kosong berlebih).", "Aktifkan opsi 'Print Titles' agar baris header berulang di setiap halaman cetak.", "Cek hasil melalui Print Preview sebelum dianggap selesai."], "input": "Sheet 'Data Pelatihan' yang sudah diformat.", "expectedOutput": "Header tetap terlihat saat scroll; tampilan Print Preview rapi dalam orientasi landscape dengan header berulang di setiap halaman.", "acceptance": "Freeze Panes aktif tepat di baris setelah header; Print Preview tidak memotong kolom; orientasi landscape.", "type": "self", "answerKey": {"formula": "View > Freeze Panes > Freeze Top Row. Page Layout > Orientation > Landscape. Page Layout > Print Area > Set Print Area. Page Layout > Print Titles > Rows to repeat at top.", "expected": "Baris 1 (header) tetap terlihat di semua posisi scroll; Print Preview menampilkan seluruh kolom tanpa terpotong.", "steps": ["Klik cell A2 lalu View > Freeze Panes > Freeze Panes (freeze baris 1)", "Page Layout > Orientation > Landscape", "Blok A1:P61 > Page Layout > Print Area > Set Print Area", "Page Layout > Print Titles > isi baris 1 di 'Rows to repeat at top'"], "mistakes": ["Freeze Panes diterapkan di cell yang salah sehingga ikut membekukan sebagian data", "Print Area tidak diset sehingga kolom bantu ikut tercetak", "Lupa cek Print Preview sehingga kolom terakhir terpotong di kertas"]}}, {"id": 6, "level": "Basic+", "levelKey": "basicplus", "category": "Conditional Logic", "weight": 5, "title": "Menentukan Status Kelulusan dengan IF", "skill": "IF, AND, OR, IFERROR.", "context": "Standar kelulusan pelatihan perusahaan adalah Nilai Post-Test minimal sama dengan Nilai Target (kolom 'Target'). Anda perlu membuat kolom status kelulusan otomatis, bukan menilai manual satu per satu.", "instructions": ["Buat kolom baru 'Status Kelulusan (Formula)'.", "Gunakan formula IF: jika Nilai Post-Test >= Nilai Target maka 'Lulus', jika tidak maka 'Tidak Lulus'.", "Bungkus formula dengan IFERROR agar jika ada data nilai yang kosong/error, hasilnya menampilkan 'Data Tidak Lengkap' bukan pesan error Excel.", "Hitung total peserta yang berstatus 'Lulus' menggunakan formula (boleh pakai COUNTIF pada kolom hasil IF ini sebagai validasi silang).", "Bandingkan hasil kolom formula Anda dengan kolom 'Status' asli pada dataset — pastikan hasilnya konsisten."], "input": "Kolom Nilai Post-Test dan Target pada sheet 'Data Pelatihan'.", "expectedOutput": "Kolom 'Status Kelulusan (Formula)' terisi otomatis untuk 60 baris, dan hasilnya sama dengan kolom Status pada dataset asli.", "acceptance": "Formula menggunakan IF (bukan hasil ketik manual); jumlah 'Lulus' hasil formula sama dengan jumlah pada dataset asli.", "type": "auto_number", "fields": [{"key": "count_lulus", "label": "Total peserta berstatus 'Lulus' hasil formula IF", "expected": 29, "tolerance": 0}], "answerKey": {"formula": "=IFERROR(IF(PostTest>=Target,\"Lulus\",\"Tidak Lulus\"),\"Data Tidak Lengkap\")", "expected": "Jumlah Lulus = 29, Tidak Lulus = 31", "steps": ["Tulis formula IF di baris pertama data", "Bungkus dengan IFERROR", "Copy/drag formula ke seluruh 60 baris", "Validasi dengan COUNTIF(range,\"Lulus\") harus sama dengan hasil IF"], "mistakes": ["Logika terbalik: pakai < bukan >=", "Formula tidak di-copy ke seluruh baris", "Referensi Target menggunakan cell relatif yang salah sehingga hasil ngaco saat di-drag"]}}, {"id": 7, "level": "Basic+", "levelKey": "basicplus", "category": "Conditional Logic", "weight": 5, "title": "Menghitung Data Bersyarat dengan COUNTIF", "skill": "COUNTIF.", "context": "Tim IT bertanya berapa banyak anggota tim mereka yang sudah lulus pelatihan tahun ini, untuk dilaporkan ke IT Manager.", "instructions": ["Gunakan COUNTIF untuk menghitung jumlah peserta dari Divisi 'IT' yang Status-nya 'Lulus'.", "Catatan: karena ini melibatkan 2 kriteria, gunakan COUNTIFS (bukan COUNTIF tunggal) — lakukan pada Task 13, di sini fokus dulu pada satu kriteria: hitung total peserta Divisi 'IT' saja menggunakan COUNTIF.", "Bandingkan hasilnya dengan memfilter manual kolom Divisi = IT untuk memverifikasi jawaban Anda."], "input": "Kolom Divisi pada sheet 'Data Pelatihan'.", "expectedOutput": "Angka jumlah peserta dari Divisi IT, dihasilkan dari formula COUNTIF.", "acceptance": "Hasil formula sama dengan jumlah baris Divisi=IT pada dataset.", "type": "auto_number", "fields": [{"key": "count_it", "label": "Jumlah peserta Divisi IT — COUNTIF", "expected": 9, "tolerance": 0}], "answerKey": {"formula": "=COUNTIF(range_Divisi,\"IT\")", "expected": "Jumlah peserta Divisi IT = 9", "steps": ["Tulis =COUNTIF(RangeDivisi,\"IT\")", "Pastikan range mencakup seluruh 60 baris"], "mistakes": ["Salah eja kriteria (mis. 'it' vs 'IT' — sebenarnya tidak case sensitive tapi typo tetap salah)", "Range tidak lengkap 60 baris"]}}, {"id": 8, "level": "Basic+", "levelKey": "basicplus", "category": "Conditional Logic", "weight": 5, "title": "Menjumlahkan Biaya Bersyarat dengan SUMIF", "skill": "SUMIF.", "context": "Finance Manager meminta rekap total biaya pelatihan yang dikeluarkan khusus untuk Divisi Finance, untuk dicocokkan dengan anggaran tahunan.", "instructions": ["Gunakan SUMIF untuk menjumlahkan kolom Biaya Pelatihan, dengan kriteria Divisi = 'Finance'.", "Pastikan hasil formula sesuai format Currency (Rupiah).", "Verifikasi hasil dengan menjumlahkan manual filter Divisi=Finance."], "input": "Kolom Divisi dan Biaya Pelatihan pada sheet 'Data Pelatihan'.", "expectedOutput": "Total biaya pelatihan Divisi Finance dalam format Rupiah, dihasilkan dari SUMIF.", "acceptance": "Hasil formula sama persis dengan total biaya aktual seluruh baris Divisi=Finance.", "type": "auto_number", "fields": [{"key": "sum_biaya_finance", "label": "Total Biaya Pelatihan Divisi Finance (Rp) — SUMIF", "expected": 26600000, "tolerance": 0}], "answerKey": {"formula": "=SUMIF(range_Divisi,\"Finance\",range_Biaya)", "expected": "Total Biaya Finance = Rp26.600.000", "steps": ["Tulis =SUMIF(RangeDivisi,\"Finance\",RangeBiaya)", "Pastikan range kriteria dan range jumlah punya ukuran baris yang sama"], "mistakes": ["Range kriteria dan range sum tidak sejajar (jumlah baris berbeda)", "Kriteria di-hardcode salah ejaan divisi"]}}, {"id": 9, "level": "Basic+", "levelKey": "basicplus", "category": "Data Cleaning", "weight": 10, "title": "Data Cleaning & Text Manipulation", "skill": "Data cleaning, menghapus duplicate, menangani blank data, LEFT, RIGHT, MID, LEN, TRIM, CONCAT/TEXTJOIN.", "context": "Sebelum data dikirim ke sistem HRIS, Anda diminta membersihkannya: memastikan tidak ada duplikasi ID Pegawai, tidak ada spasi berlebih, dan menyiapkan kolom identitas gabungan untuk kebutuhan pelaporan.", "instructions": ["Periksa dan hapus baris duplikat menggunakan fitur Remove Duplicates berdasarkan kolom ID Pegawai.", "Gunakan TRIM pada kolom Nama untuk membersihkan spasi berlebih di awal/akhir/antar kata.", "Buat kolom baru 'Kode Divisi' yang mengambil 3 huruf pertama dari nama Divisi menggunakan LEFT, dalam huruf kapital.", "Buat kolom baru 'Inisial' yang mengambil huruf pertama dari Nama Depan dan Nama Belakang menggunakan LEFT/RIGHT/MID sesuai kebutuhan.", "Buat kolom baru 'Label Laporan' yang menggabungkan ID Pegawai, Nama, dan Divisi menjadi satu teks dengan pemisah ' - ' menggunakan TEXTJOIN atau CONCAT, contoh: 'EMP1001 - Prita Wijaya - Finance'.", "Gunakan LEN untuk memverifikasi tidak ada nama yang kosong (panjang teks = 0) setelah TRIM."], "input": "Kolom ID Pegawai, Nama, dan Divisi pada sheet 'Data Pelatihan'.", "expectedOutput": "Data tanpa duplikat, kolom Nama bersih dari spasi berlebih, dan 3 kolom bantu baru (Kode Divisi, Inisial, Label Laporan) terisi untuk seluruh baris.", "acceptance": "Tidak ada ID Pegawai yang duplikat; kolom Label Laporan formatnya konsisten di semua baris; tidak ada hasil LEN = 0 pada kolom Nama.", "type": "self", "answerKey": {"formula": "=TRIM(A2) | =UPPER(LEFT(Divisi,3)) | =TEXTJOIN(\" - \",TRUE,ID,Nama,Divisi) | =LEN(TRIM(Nama))", "expected": "0 baris duplikat ID Pegawai; contoh Label Laporan baris 1: 'EMP1001 - Prita Wijaya - Finance'.", "steps": ["Data > Remove Duplicates, centang kolom ID Pegawai", "Buat kolom bantu dengan TRIM sebelum diproses lebih lanjut", "Gabungkan dengan TEXTJOIN, gunakan TRUE untuk ignore_empty"], "mistakes": ["Remove Duplicates dijalankan berdasarkan seluruh kolom sehingga baris yang sebenarnya unik ikut terhapus", "Lupa TRIM sebelum LEFT/RIGHT sehingga hasil ikut membawa spasi", "TEXTJOIN tanpa delimiter yang konsisten"]}}, {"id": 10, "level": "Basic+", "levelKey": "basicplus", "category": "Data Validation", "weight": 5, "title": "Data Validation & Conditional Formatting", "skill": "Data Validation, Drop-down list, Conditional Formatting, Highlight duplicate, Highlight cells based on condition.", "context": "Untuk mencegah kesalahan input di masa depan, tim L&D ingin form input Divisi dibatasi dengan drop-down, dan status kelulusan ditandai warna otomatis agar mudah dipindai secara visual saat rapat.", "instructions": ["Buat Data Validation berupa Drop-down List pada kolom Divisi (di baris kosong tambahan untuk input baru), berisi 6 pilihan divisi yang valid: Finance, Human Resources, IT, Marketing, Operations, Sales.", "Terapkan Conditional Formatting pada kolom Status: warna hijau untuk 'Lulus' dan warna merah untuk 'Tidak Lulus'.", "Terapkan Conditional Formatting 'Highlight Duplicate Values' pada kolom ID Pegawai untuk mendeteksi ID ganda.", "Tambahkan Conditional Formatting Data Bars pada kolom Nilai Post-Test agar besar-kecil nilai terlihat secara visual."], "input": "Sheet 'Data Pelatihan' hasil pembersihan pada Task 9.", "expectedOutput": "Kolom Divisi memiliki drop-down list; kolom Status berwarna hijau/merah otomatis; ID duplikat (jika ada) ter-highlight; kolom Nilai Post-Test memiliki data bar.", "acceptance": "Drop-down hanya menampilkan 6 opsi divisi yang valid, tidak bisa diisi bebas; warna status berubah otomatis mengikuti nilai (bukan diwarnai manual).", "type": "self", "answerKey": {"formula": "Data > Data Validation > List, source: Finance,Human Resources,IT,Marketing,Operations,Sales. Conditional Formatting > New Rule > Format only cells that contain > 'Lulus'/'Tidak Lulus'.", "expected": "Drop-down aktif dengan 6 opsi; warna hijau untuk Lulus, merah untuk Tidak Lulus.", "steps": ["Data > Data Validation > Allow: List > isi 6 nama divisi dipisah koma", "Home > Conditional Formatting > Highlight Cells Rules > Text that Contains", "Home > Conditional Formatting > Highlight Duplicate Values pada kolom ID", "Home > Conditional Formatting > Data Bars pada kolom Nilai Post-Test"], "mistakes": ["Data validation diterapkan ke kolom yang salah", "Warna diberikan manual (fill warna biasa) bukan lewat Conditional Formatting sehingga tidak otomatis update", "Highlight duplicate diterapkan ke kolom Nama, bukan ID (nama bisa mirip tapi bukan berarti duplikat data)"]}}, {"id": 11, "level": "Intermediate", "levelKey": "intermediate", "category": "Lookup", "weight": 8, "title": "Mencari Data Pegawai dengan XLOOKUP", "skill": "XLOOKUP (atau VLOOKUP).", "context": "Sekretaris L&D akan mengirim undangan sertifikat dan perlu mencari cepat nama serta divisi pegawai hanya dengan mengetik ID Pegawai, tanpa scroll manual di antara 60 baris data.", "instructions": ["Buat area pencarian kecil (mis. di sheet 'Ringkasan'): cell input 'ID Pegawai yang dicari', lalu 3 cell hasil: Nama, Divisi, Jabatan.", "Uji pencarian dengan ID Pegawai 'EMP1006'.", "Gunakan XLOOKUP (atau VLOOKUP jika versi Excel Anda belum mendukung XLOOKUP) untuk menampilkan Nama, Divisi, dan Jabatan berdasarkan ID Pegawai yang diketik.", "Tambahkan argumen 'if_not_found' pada XLOOKUP (atau bungkus VLOOKUP dengan IFERROR) agar menampilkan teks 'ID tidak ditemukan' jika ID salah ketik."], "input": "Kolom ID Pegawai, Nama, Divisi, Jabatan pada sheet 'Data Pelatihan'.", "expectedOutput": "Saat ID 'EMP1006' diketik di cell input, formula menampilkan Nama, Divisi, dan Jabatan yang sesuai secara otomatis.", "acceptance": "Formula otomatis mengikuti perubahan ID yang diketik (bukan hasil ketik manual); menampilkan pesan yang wajar saat ID tidak ditemukan.", "type": "auto_text", "fields": [{"key": "lookup_nama", "label": "Nama hasil XLOOKUP untuk ID EMP1006", "expected": ["sari setiawan"]}, {"key": "lookup_divisi", "label": "Divisi hasil XLOOKUP untuk ID EMP1006", "expected": ["sales"]}], "answerKey": {"formula": "=XLOOKUP(CellID,Range_ID,Range_Nama,\"ID tidak ditemukan\") — ulangi untuk kolom Divisi dan Jabatan. Alternatif: =IFERROR(VLOOKUP(CellID,Range,kolom_ke,FALSE),\"ID tidak ditemukan\")", "expected": "ID EMP1006 → Nama: Sari Setiawan, Divisi: Sales, Jabatan: Sales Supervisor", "steps": ["Tulis ID pada cell input", "Buat formula XLOOKUP merujuk ke cell input sebagai lookup_value", "Gunakan $ (absolute reference) pada range data agar tidak berubah saat di-copy ke kolom lain"], "mistakes": ["Lupa absolute reference ($) sehingga range bergeser saat formula di-copy ke kolom sebelah", "VLOOKUP menggunakan range_lookup TRUE (approximate) padahal harus FALSE (exact match)", "Kolom hasil VLOOKUP salah hitung index (col_index_num keliru)"]}}, {"id": 12, "level": "Intermediate", "levelKey": "intermediate", "category": "Conditional Aggregation", "weight": 5, "title": "SUMIFS: Total Biaya dengan Dua Kriteria", "skill": "SUMIFS.", "context": "Finance ingin tahu berapa total biaya yang sudah dikeluarkan untuk program kategori 'Compliance' yang pesertanya dinyatakan 'Lulus' — karena hanya peserta lulus yang sertifikatnya bisa diklaim sebagai compliance requirement.", "instructions": ["Gunakan SUMIFS untuk menjumlahkan Biaya Pelatihan dengan dua kriteria sekaligus: Kategori = 'Compliance' DAN Status = 'Lulus'.", "Pastikan hasil dalam format Currency."], "input": "Kolom Kategori, Status, dan Biaya Pelatihan pada sheet 'Data Pelatihan'.", "expectedOutput": "Total biaya program Compliance yang pesertanya Lulus, dihasilkan dari SUMIFS.", "acceptance": "Hasil formula sama dengan total aktual baris yang memenuhi kedua kriteria sekaligus.", "type": "auto_number", "fields": [{"key": "sumifs_compliance", "label": "Total Biaya Kategori=Compliance & Status=Lulus (Rp)", "expected": 5300000, "tolerance": 0}], "answerKey": {"formula": "=SUMIFS(range_Biaya, range_Kategori,\"Compliance\", range_Status,\"Lulus\")", "expected": "Total = Rp5.300.000", "steps": ["Sum_range diletakkan pertama pada SUMIFS (berbeda urutan dari SUMIF)", "Tambahkan pasangan criteria_range, criteria untuk setiap kondisi"], "mistakes": ["Tertukar urutan argumen dengan SUMIF (di SUMIF sum_range di akhir, di SUMIFS sum_range di awal)", "Salah satu kriteria tidak sesuai ejaan persis dengan data"]}}, {"id": 13, "level": "Intermediate", "levelKey": "intermediate", "category": "Conditional Aggregation", "weight": 5, "title": "COUNTIFS: Menghitung dengan Dua Kriteria", "skill": "COUNTIFS.", "context": "Training Manager ingin tahu berapa banyak peserta program kategori 'Technical' yang masih 'Tidak Lulus', untuk dijadwalkan mengikuti sesi remedial.", "instructions": ["Gunakan COUNTIFS untuk menghitung jumlah peserta dengan dua kriteria sekaligus: Kategori = 'Technical' DAN Status = 'Tidak Lulus'."], "input": "Kolom Kategori dan Status pada sheet 'Data Pelatihan'.", "expectedOutput": "Jumlah peserta yang perlu mengikuti remedial, dihasilkan dari COUNTIFS.", "acceptance": "Hasil formula sama dengan jumlah aktual baris yang memenuhi kedua kriteria.", "type": "auto_number", "fields": [{"key": "countifs_technical", "label": "Jumlah Kategori=Technical & Status=Tidak Lulus", "expected": 4, "tolerance": 0}], "answerKey": {"formula": "=COUNTIFS(range_Kategori,\"Technical\",range_Status,\"Tidak Lulus\")", "expected": "Jumlah = 4", "steps": ["Setiap kriteria butuh pasangan range dan kondisinya sendiri", "Pastikan seluruh range yang dipasangkan punya jumlah baris yang sama"], "mistakes": ["Range Kategori dan range Status berbeda jumlah baris", "Kriteria teks tidak sama persis (mis. 'Tidak lulus' huruf kecil semua masih boleh karena tidak case sensitive, tapi typo seperti 'Belum Lulus' akan salah)"]}}, {"id": 14, "level": "Intermediate", "levelKey": "intermediate", "category": "Lookup", "weight": 7, "title": "Mengonversi ke Excel Table & Structured Reference", "skill": "Excel Table, structured reference, mendukung Lookup & analisis lanjutan.", "context": "Data akan terus bertambah tiap bulan. Agar formula (termasuk XLOOKUP dan PivotTable) otomatis mengikuti data baru tanpa perlu diedit ulang, data perlu diubah menjadi Excel Table.", "instructions": ["Blok seluruh data lalu ubah menjadi Excel Table (Insert > Table / Ctrl+T), pastikan opsi 'My table has headers' dicentang.", "Beri nama Table yang deskriptif, misalnya 'TabelPelatihan' (Table Design > Table Name).", "Tambahkan 2 baris data dummy baru di bawah tabel dan pastikan formatting serta formula (jika ada) otomatis mengikuti ke baris baru tersebut — ini membuktikan Table bekerja dengan benar.", "Aktifkan 'Total Row' pada Table untuk menampilkan total Biaya Pelatihan di baris paling bawah secara otomatis."], "input": "Sheet 'Data Pelatihan' hasil task-task sebelumnya.", "expectedOutput": "Data dalam format Excel Table bernama, dengan Total Row aktif dan format otomatis mengikuti saat baris baru ditambahkan.", "acceptance": "Table memiliki nama kustom (bukan 'Table1' default); menambah baris baru langsung mewarisi format tabel; Total Row menampilkan angka SUM yang benar.", "type": "self", "answerKey": {"formula": "Ctrl+T untuk membuat Table. Table Design > Table Name. Table Design > centang 'Total Row'.", "expected": "Total Row pada kolom Biaya menampilkan total yang sama dengan hasil SUM manual di Task 3.", "steps": ["Select data > Ctrl+T", "Beri nama table pada Table Design tab", "Ketik data baru tepat di baris setelah baris terakhir table agar otomatis masuk ke dalam table", "Table Design > centang Total Row, pilih fungsi Sum pada kolom Biaya"], "mistakes": ["Baris baru ditulis di luar batas table sehingga tidak otomatis terformat", "Nama table dibiarkan default sehingga sulit dirujuk di formula lain", "Total Row diaktifkan tapi fungsi yang dipilih bukan Sum"]}}, {"id": 15, "level": "Intermediate", "levelKey": "intermediate", "category": "Business Insight", "weight": 1, "title": "Analisis Awal: Divisi dengan Tingkat Kelulusan Terendah", "skill": "Sort & Filter, Subtotal, analisis berdasarkan kategori/divisi.", "context": "Sebelum masuk ke PivotTable pada level berikutnya, Head of L&D ingin gambaran cepat: divisi mana saja yang tingkat kelulusan pelatihannya paling rendah, agar bisa disiapkan bahan diskusi awal.", "instructions": ["Gunakan Subtotal (Data > Subtotal) yang dikelompokkan berdasarkan Divisi, untuk menghitung: Count of Nama (jumlah peserta) dan Count of Status (bisa dibantu kolom helper 'Lulus'=1) per divisi.", "Alternatif: gunakan kombinasi COUNTIFS untuk menghitung jumlah 'Lulus' per divisi, lalu bagi dengan jumlah total peserta per divisi untuk mendapatkan persentase kelulusan.", "Urutkan hasil dari persentase kelulusan terendah ke tertinggi.", "Sebutkan 1 nama divisi dengan tingkat kelulusan (pass rate) TERENDAH di seluruh dataset."], "input": "Kolom Divisi dan Status pada sheet 'Data Pelatihan'.", "expectedOutput": "Nama divisi dengan pass rate terendah, didukung oleh perhitungan (Subtotal atau COUNTIFS/COUNT).", "acceptance": "Divisi yang disebut memang memiliki pass rate terendah menurut dataset aktual.", "type": "auto_text", "fields": [{"key": "lowest_divisi", "label": "Divisi dengan pass rate kelulusan TERENDAH", "expected": ["finance", "human resources"]}], "answerKey": {"formula": "Pass Rate = COUNTIFS(Divisi,x,Status,\"Lulus\") / COUNTIF(Divisi,x)", "expected": "Divisi dengan pass rate terendah: Finance dan Human Resources (sama-sama 40.0%)", "steps": ["Hitung pass rate tiap divisi satu per satu", "Bandingkan seluruh divisi", "Urutkan ascending untuk menemukan yang terendah"], "mistakes": ["Membandingkan jumlah Lulus absolut, bukan persentase (divisi besar wajar punya jumlah Lulus lebih banyak meski pass rate rendah)", "Salah menghitung total peserta per divisi sebagai pembagi"]}}, {"id": 16, "level": "Intermediate+", "levelKey": "intermediateplus", "category": "PivotTable", "weight": 6, "title": "Meringkas Data dengan PivotTable", "skill": "PivotTable — meringkas, membandingkan, dan menganalisis data.", "context": "Head of L&D meminta ringkasan performa pelatihan per divisi untuk laporan bulanan: jumlah peserta, rata-rata nilai post-test, dan jumlah yang lulus — dalam satu tampilan ringkas yang mudah difilter.", "instructions": ["Buat PivotTable baru dari Excel Table hasil Task 14 (pastikan sumber data mencakup seluruh baris termasuk baris tambahan).", "Letakkan 'Divisi' pada area Rows.", "Tambahkan 'Nama' pada area Values dengan fungsi Count (jumlah peserta per divisi).", "Tambahkan 'Nilai Post-Test' pada area Values dengan fungsi Average, format 2 desimal.", "Tambahkan filter (Slicer atau Filter area) berdasarkan 'Kategori' program.", "Baca hasil PivotTable: berapa rata-rata Nilai Post-Test untuk Divisi Marketing?"], "input": "Excel Table 'TabelPelatihan' hasil Task 14.", "expectedOutput": "PivotTable menampilkan jumlah peserta dan rata-rata nilai post-test per Divisi, dengan filter Kategori aktif.", "acceptance": "Angka pada PivotTable sesuai dengan agregasi aktual dataset per divisi; filter kategori berfungsi mengubah angka yang ditampilkan.", "type": "auto_number", "fields": [{"key": "avg_marketing_pivot", "label": "Rata-rata Nilai Post-Test Divisi Marketing (dari PivotTable)", "expected": 77.0, "tolerance": 0.1}], "answerKey": {"formula": "Insert > PivotTable > Rows: Divisi, Values: Count of Nama, Average of Nilai Post-Test.", "expected": "Rata-rata Nilai Post-Test Divisi Marketing = 77.0 (dari 16 peserta)", "steps": ["Klik di dalam Table > Insert > PivotTable", "Drag 'Divisi' ke Rows", "Drag 'Nama' ke Values (ubah ke Count)", "Drag 'Nilai Post-Test' ke Values kedua (ubah ke Average), klik kanan > Number Format > 2 desimal", "Tambahkan Slicer untuk Kategori via PivotTable Analyze > Insert Slicer"], "mistakes": ["Value field masih menghitung Sum, bukan Average, untuk kolom nilai", "Source data PivotTable tidak mencakup baris tambahan karena bukan berasal dari Excel Table", "Lupa refresh PivotTable setelah data sumber berubah"]}}, {"id": 17, "level": "Intermediate+", "levelKey": "intermediateplus", "category": "PivotTable", "weight": 4, "title": "Visualisasi PivotTable dengan PivotChart", "skill": "PivotChart.", "context": "Angka pada PivotTable akan lebih mudah dipahami peserta rapat non-teknis bila divisualisasikan dalam bentuk grafik perbandingan antar divisi.", "instructions": ["Dari PivotTable Task 16, buat PivotChart berjenis Clustered Column.", "Sumbu X (kategori) menampilkan nama Divisi, sumbu Y menampilkan jumlah peserta (Count of Nama).", "Beri judul chart yang deskriptif, misalnya 'Jumlah Peserta Pelatihan per Divisi'.", "Pastikan PivotChart ikut berubah ketika filter/slicer Kategori pada PivotTable diganti."], "input": "PivotTable hasil Task 16.", "expectedOutput": "PivotChart batang yang menampilkan jumlah peserta per divisi, dengan judul yang jelas dan interaktif mengikuti filter.", "acceptance": "Chart type sesuai (Clustered Column); judul chart informatif bukan default 'Chart Title'; chart berubah saat filter/slicer diganti.", "type": "self", "answerKey": {"formula": "PivotTable Analyze > PivotChart > Clustered Column.", "expected": "Chart menampilkan 6 batang (satu per divisi) dengan tinggi sesuai jumlah peserta masing-masing.", "steps": ["Klik di dalam PivotTable", "PivotTable Analyze > PivotChart", "Pilih Clustered Column", "Klik judul chart, ganti dengan judul deskriptif"], "mistakes": ["Chart dibuat dari data biasa (Insert > Chart) bukan PivotChart, sehingga tidak otomatis mengikuti filter", "Judul chart dibiarkan default"]}}, {"id": 18, "level": "Intermediate+", "levelKey": "intermediateplus", "category": "Visualization", "weight": 5, "title": "Menyusun Dashboard Sederhana", "skill": "Menggabungkan PivotTable, PivotChart, dan ringkasan formula menjadi satu tampilan dashboard.", "context": "Head of L&D ingin satu sheet ringkas ('Dashboard') yang bisa langsung dilihat tanpa perlu membuka sheet data mentah, cocok untuk ditampilkan di layar saat rapat.", "instructions": ["Buat sheet baru bernama 'Dashboard'.", "Pindahkan/tautkan PivotChart dari Task 17 ke sheet Dashboard.", "Tambahkan 3-4 kartu ringkasan angka penting menggunakan formula (misalnya Total Biaya, Rata-rata Nilai, Jumlah Peserta, Pass Rate keseluruhan) yang tertaut ke sheet data.", "Rapikan layout: sembunyikan gridlines, gunakan warna dan font yang konsisten, kelompokkan elemen agar mudah dibaca dalam satu layar tanpa perlu scroll."], "input": "PivotTable/PivotChart dan formula ringkasan dari task-task sebelumnya.", "expectedOutput": "Satu sheet Dashboard yang menampilkan grafik dan angka-angka kunci secara ringkas dan rapi.", "acceptance": "Seluruh elemen dashboard muat dalam satu layar tanpa perlu scroll berlebihan; angka pada dashboard otomatis mengikuti data sumber (bukan angka statis hasil ketik manual).", "type": "self", "answerKey": {"formula": "Kartu ringkasan menggunakan referensi cell/formula langsung ke sheet data (mis. =Ringkasan!B2), bukan angka yang diketik ulang.", "expected": "Dashboard menampilkan chart + minimal 3 kartu angka kunci yang saling konsisten dengan data sumber.", "steps": ["Sheet baru > beri nama 'Dashboard'", "Copy PivotChart (klik kanan > Copy) lalu paste di sheet Dashboard sebagai link", "Buat text box atau cell besar berisi formula tautan ke angka ringkasan", "View > uncheck Gridlines untuk tampilan lebih bersih"], "mistakes": ["Angka pada kartu ringkasan diketik manual sehingga tidak update otomatis saat data berubah", "Dashboard terlalu padat/berantakan sehingga sulit dibaca dalam satu layar"]}}, {"id": 19, "level": "Intermediate+", "levelKey": "intermediateplus", "category": "Business Insight", "weight": 1, "title": "Analisis Status Sertifikasi (Aktif vs Expired)", "skill": "IF/formula tanggal, COUNTIFS, analisis kategori berdasarkan kondisi tanggal.", "context": "Beberapa program pelatihan (kategori Technical dan Compliance) menghasilkan sertifikat yang berlaku selama 1 tahun sejak tanggal pelatihan. Compliance Officer perlu tahu berapa banyak sertifikat yang MASIH AKTIF dan berapa yang SUDAH EXPIRED per hari ini.", "instructions": ["Untuk baris yang memiliki tanggal 'Sertifikat Berlaku s.d.' (tidak kosong), buat kolom 'Status Sertifikat' menggunakan IF: jika tanggal tersebut >= TODAY() maka 'Aktif', jika tidak maka 'Expired'.", "Gunakan fungsi TODAY() agar status selalu update otomatis mengikuti tanggal hari ini, bukan tanggal yang di-hardcode.", "Hitung total sertifikat berstatus 'Aktif' dan total yang 'Expired' menggunakan COUNTIF pada kolom Status Sertifikat.", "Terapkan Conditional Formatting: hijau untuk Aktif, abu-abu untuk Expired."], "input": "Kolom 'Sertifikat Berlaku s.d.' pada sheet 'Data Pelatihan' (hanya terisi untuk sebagian baris).", "expectedOutput": "Kolom Status Sertifikat terisi otomatis untuk baris yang memiliki tanggal berlaku, beserta total Aktif dan Expired.", "acceptance": "Total Aktif + Total Expired harus sama dengan jumlah baris yang memiliki tanggal berlaku (tidak kosong); status dihitung dari TODAY(), bukan tanggal tetap.", "type": "auto_number", "fields": [{"key": "active_cert", "label": "Jumlah Sertifikat Aktif", "expected": 7, "tolerance": 0}, {"key": "expired_cert", "label": "Jumlah Sertifikat Expired", "expected": 3, "tolerance": 0}], "answerKey": {"formula": "=IF(TanggalBerlaku=\"\",\"\",IF(TanggalBerlaku>=TODAY(),\"Aktif\",\"Expired\"))", "expected": "Aktif = 7, Expired = 3 (per tanggal evaluasi 15 Agustus 2026)", "steps": ["Cek dulu apakah cell tanggal kosong dengan IF bertingkat/AND", "Bandingkan tanggal dengan TODAY()", "COUNTIF pada hasil kolom Status Sertifikat untuk 'Aktif' dan 'Expired'"], "mistakes": ["Baris tanpa tanggal (kosong) ikut dihitung sebagai 'Expired' karena tidak dicek terlebih dahulu", "Menghardcode tanggal hari ini alih-alih memakai TODAY(), sehingga hasil tidak update otomatis"]}}, {"id": 20, "level": "Intermediate+", "levelKey": "intermediateplus", "category": "Business Insight", "weight": 3, "title": "Business Case: Rekomendasi untuk Head of L&D", "skill": "Business insight, analytical thinking, komunikasi hasil analisis.", "context": "Ini adalah task penutup assessment. Head of L&D akan membaca ringkasan Anda sebagai bahan pengambilan keputusan program pelatihan tahun depan — bukan sekadar angka, tapi rekomendasi tindak lanjut yang bisa dieksekusi.", "instructions": ["Berdasarkan seluruh analisis pada task-task sebelumnya (pass rate per divisi, biaya per divisi, status sertifikasi), tentukan 3 unit/divisi dengan pencapaian (pass rate) TERENDAH.", "Jelaskan secara singkat kemungkinan penyebab (berdasarkan pola pada data, misalnya kategori program yang paling sering diikuti divisi tersebut, atau rata-rata nilai pre-test yang rendah).", "Berikan REKOMENDASI TINDAK LANJUT yang konkret dan bisa dieksekusi (contoh: sesi remedial, mengganti trainer, menyesuaikan target nilai, dsb).", "Tulis ringkasan Anda dalam 4-8 kalimat, seakan-akan ini adalah bagian 'Executive Summary' dari laporan yang akan dibaca Head of L&D."], "input": "Seluruh hasil analisis dari Task 1-19.", "expectedOutput": "Paragraf ringkasan bisnis (bukan sekadar angka) yang berisi temuan utama dan rekomendasi tindak lanjut.", "acceptance": "Jawaban minimal menyebut 1 divisi dengan pencapaian rendah dan minimal 1 rekomendasi konkret; dinilai oleh Trainer secara manual berdasarkan kualitas analisis, bukan dicocokkan dengan jawaban tunggal.", "type": "open", "fields": [{"key": "business_summary", "label": "Executive Summary & Rekomendasi (4-8 kalimat)"}], "answerKey": {"formula": "Tidak ada formula tunggal — task ini menilai analytical thinking & komunikasi.", "expected": "Contoh arah jawaban: Divisi Finance dan Human Resources memiliki pass rate terendah (40.0%). Rekomendasi: sesi remedial terfokus, evaluasi kesesuaian program dengan kebutuhan divisi, dan peninjauan ulang target nilai kelulusan.", "steps": ["Rujuk hasil pass rate per divisi dari Task 15/16", "Cari pola pendukung (kategori program, nilai pre-test rata-rata)", "Susun rekomendasi yang actionable, bukan sekadar deskriptif"], "mistakes": ["Hanya menyebutkan angka tanpa rekomendasi tindak lanjut", "Rekomendasi terlalu umum ('perlu ditingkatkan') tanpa langkah konkret", "Tidak merujuk pada data aktual (mengarang tanpa dasar)"]}}];
+</script>
+<script id="app-logic">
+/* ================= GOOGLE SHEET SYNC CONFIG ================= */
+/* Ganti URL di bawah ini dengan Web App URL hasil deploy Google Apps Script Anda.
+   Lihat panduan setup: Apps Script Code.gs yang disertakan terpisah. */
+const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxVOJr_KI-r7_UEOfuWYrUxcA1NHPNa-JziYjXwPwtEPUbGJMLQjpKZaCSAjFEYrIE/exec";
+
+/* ================= STATE ================= */
+const STORAGE_KEY = 'excelAssessment_v1';
+const SECTIONS = [
+  {key:'basic', label:'Basic', num:'01', range:[1,5], desc:'Fondasi Excel: input data, formatting angka/tanggal/currency, formula dasar (SUM, AVERAGE, MIN, MAX, COUNT), sort & filter, freeze panes.'},
+  {key:'basicplus', label:'Basic+', num:'02', range:[6,10], desc:'Logika kondisional dasar: IF, COUNTIF, SUMIF, pembersihan data (data cleaning), text function, data validation, dan conditional formatting.'},
+  {key:'intermediate', label:'Intermediate', num:'03', range:[11,15], desc:'Lookup data dengan XLOOKUP, agregasi multi-kriteria (SUMIFS, COUNTIFS), Excel Table, dan analisis awal antar divisi.'},
+  {key:'intermediateplus', label:'Intermediate+', num:'04', range:[16,20], desc:'PivotTable, PivotChart, dashboard sederhana, analisis status sertifikasi, dan business case / rekomendasi tindak lanjut.'},
+  {key:'final', label:'Final Result', num:'05', range:null, desc:''}
+];
+
+let state = {
+  participant:{name:'', empId:'', divisi:''},
+  mode:'participant', // 'participant' | 'trainer'
+  currentSection:'basic',
+  taskCompleted:{},   // {taskId: true/false}
+  taskAnswers:{},     // {taskId: {fieldKey: value}}
+  keyOpen:{},          // {taskId: bool} trainer key visibility
+  timer:{elapsedSec:0, running:true, lastTick:Date.now()},
+  submitted:false,
+  loggedIn:false,
+  sessionId:''
+};
+
+function loadState(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(raw){
+      const parsed = JSON.parse(raw);
+      state = Object.assign(state, parsed);
+      state.timer.lastTick = Date.now();
+    }
+  }catch(e){ console.warn('load failed', e); }
+}
+function saveState(){
+  try{
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  }catch(e){ console.warn('save failed', e); }
+}
+
+/* ================= UTIL ================= */
+function fmtRupiah(n){
+  if(n===null||n===undefined||isNaN(n)) return '';
+  return 'Rp' + Math.round(n).toLocaleString('id-ID');
+}
+function fmtDateID(iso){
+  const d = new Date(iso+'T00:00:00');
+  const bulan = ["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
+  return d.getDate()+' '+bulan[d.getMonth()]+' '+d.getFullYear();
+}
+function pad2(n){ return n.toString().padStart(2,'0'); }
+function fmtTimer(sec){
+  const h = Math.floor(sec/3600), m = Math.floor((sec%3600)/60), s = Math.floor(sec%60);
+  return pad2(h)+':'+pad2(m)+':'+pad2(s);
+}
+
+/* ================= TIMER ================= */
+let timerInterval = null;
+function startTimerLoop(){
+  if(timerInterval) clearInterval(timerInterval);
+  timerInterval = setInterval(()=>{
+    if(state.timer.running){
+      const now = Date.now();
+      const delta = (now - state.timer.lastTick)/1000;
+      state.timer.elapsedSec += delta;
+      state.timer.lastTick = now;
+      document.getElementById('timerVal').textContent = fmtTimer(state.timer.elapsedSec);
+      saveState();
+    }
+  }, 1000);
+}
+function toggleTimer(){
+  state.timer.running = !state.timer.running;
+  state.timer.lastTick = Date.now();
+  document.getElementById('timerToggleBtn').textContent = state.timer.running ? 'Jeda' : 'Lanjutkan';
+  saveState();
+}
+
+/* ================= PARTICIPANT INFO ================= */
+function saveParticipant(){
+  state.participant.name = document.getElementById('pName').value;
+  state.participant.empId = document.getElementById('pEmpId').value;
+  state.participant.divisi = document.getElementById('pDivisi').value;
+  saveState();
+}
+function fillParticipantForm(){
+  document.getElementById('pName').value = state.participant.name || '';
+  document.getElementById('pEmpId').value = state.participant.empId || '';
+  document.getElementById('pDivisi').value = state.participant.divisi || '';
+  const today = new Date();
+  const bulan = ["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
+  document.getElementById('pDate').value = today.getDate()+' '+bulan[today.getMonth()]+' '+today.getFullYear();
+}
+
+/* ================= LOGIN / SESSION ================= */
+function genSessionId(){
+  return 'S' + Date.now().toString(36) + Math.random().toString(36).slice(2,8);
+}
+function lockParticipantFields(){
+  ['pName','pEmpId','pDivisi'].forEach(id=>{
+    const el = document.getElementById(id);
+    el.setAttribute('disabled','disabled');
+    el.closest('.pfield').classList.add('participant-locked');
+  });
+}
+function handleLogin(){
+  const name = document.getElementById('loginName').value.trim();
+  const empId = document.getElementById('loginEmpId').value.trim();
+  const divisi = document.getElementById('loginDivisi').value;
+  const err = document.getElementById('loginError');
+  if(!name || !empId || !divisi){
+    err.classList.add('show');
+    return;
+  }
+  err.classList.remove('show');
+  state.participant = {name, empId, divisi};
+  if(!state.sessionId) state.sessionId = genSessionId();
+  state.loggedIn = true;
+  saveState();
+  document.getElementById('loginOverlay').classList.add('hidden');
+  fillParticipantForm();
+  lockParticipantFields();
+  render();
+  sendToSheet('login', {});
+}
+function handleLogout(){
+  if(!confirm('Ganti peserta? Progress peserta saat ini tetap tersimpan di perangkat ini, tapi Anda akan kembali ke layar login.')) return;
+  state.loggedIn = false;
+  saveState();
+  document.getElementById('loginOverlay').classList.remove('hidden');
+  document.getElementById('loginName').value = '';
+  document.getElementById('loginEmpId').value = '';
+  document.getElementById('loginDivisi').value = '';
+}
+function showLoginIfNeeded(){
+  if(state.loggedIn && state.participant.name){
+    document.getElementById('loginOverlay').classList.add('hidden');
+    lockParticipantFields();
+  } else {
+    document.getElementById('loginOverlay').classList.remove('hidden');
+  }
+}
+
+/* ================= GOOGLE SHEET SYNC ================= */
+function sendToSheet(eventType, extra){
+  const el = document.getElementById('syncDot');
+  const txt = document.getElementById('syncText');
+  if(!GAS_WEB_APP_URL || GAS_WEB_APP_URL.indexOf('PASTE_') === 0){
+    if(el){ el.classList.add('off'); }
+    if(txt){ txt.textContent = 'Google Sheet belum dikonfigurasi'; }
+    return;
+  }
+  const {completedCount, score} = computeTotals();
+  const payload = {
+    sessionId: state.sessionId,
+    nama: state.participant.name,
+    empId: state.participant.empId,
+    divisi: state.participant.divisi,
+    eventType: eventType,
+    taskId: (extra && extra.taskId) || '',
+    taskTitle: (extra && extra.taskTitle) || '',
+    score: score,
+    completedCount: completedCount,
+    elapsedSec: Math.round(state.timer.elapsedSec),
+    detail: (extra && extra.detail) || {}
+  };
+  if(txt){ txt.textContent = 'Menyimpan...'; }
+  fetch(GAS_WEB_APP_URL, {
+    method:'POST',
+    mode:'no-cors',
+    headers:{'Content-Type':'text/plain;charset=utf-8'},
+    body: JSON.stringify(payload)
+  }).then(()=>{
+    if(el){ el.classList.remove('off'); }
+    if(txt){ txt.textContent = 'Tersimpan ke Google Sheet'; }
+  }).catch((err)=>{
+    console.warn('Gagal mengirim data ke Google Sheet', err);
+    if(el){ el.classList.add('off'); }
+    if(txt){ txt.textContent = 'Gagal sinkronisasi, cek koneksi'; }
+  });
+}
+
+/* ================= MODE ================= */
+function setMode(mode){
+  state.mode = mode;
+  document.getElementById('btnParticipantMode').classList.toggle('active', mode==='participant');
+  document.getElementById('btnTrainerMode').classList.toggle('active', mode==='trainer');
+  saveState();
+  render();
+}
+
+/* ================= SCORING ================= */
+function isFieldCorrect(field, val){
+  if(val===undefined || val===null || val==='') return false;
+  if(field.expected===undefined) return null; // open-ended, not auto-graded
+  if(Array.isArray(field.expected)){
+    // text-type, list of accepted answers (already lowercased)
+    return field.expected.some(exp => val.toString().trim().toLowerCase().includes(exp));
+  } else {
+    const num = parseFloat(val.toString().replace(/[^0-9.\-]/g,''));
+    if(isNaN(num)) return false;
+    const tol = field.tolerance || 0;
+    return Math.abs(num - field.expected) <= tol;
+  }
+}
+
+function computeTaskScore(task){
+  const done = !!state.taskCompleted[task.id];
+  if(!done) return 0;
+  if(task.type === 'self' || task.type === 'open'){
+    return task.weight; // full credit on self-declared completion / submission
+  }
+  // auto types: partial credit based on fraction of correct fields
+  const answers = state.taskAnswers[task.id] || {};
+  const fields = task.fields || [];
+  if(fields.length===0) return task.weight;
+  let correctCount = 0;
+  fields.forEach(f=>{
+    if(isFieldCorrect(f, answers[f.key])) correctCount++;
+  });
+  return Math.round((correctCount/fields.length) * task.weight * 100)/100;
+}
+
+function computeTotals(){
+  const completedIds = Object.keys(state.taskCompleted).filter(id=>state.taskCompleted[id]);
+  const completedCount = completedIds.length;
+  let score = 0;
+  TASKS.forEach(t=>{ score += computeTaskScore(t); });
+  score = Math.round(score*10)/10;
+  return {completedCount, score};
+}
+
+function computeCategoryBreakdown(){
+  const cats = {};
+  TASKS.forEach(t=>{
+    if(!cats[t.category]) cats[t.category] = {max:0, score:0};
+    cats[t.category].max += t.weight;
+    cats[t.category].score += computeTaskScore(t);
+  });
+  return cats;
+}
+
+/* ================= DASHBOARD ================= */
+function updateDashboard(){
+  const {completedCount, score} = computeTotals();
+  document.getElementById('dcCompleted').textContent = completedCount;
+  document.getElementById('dcRemaining').textContent = (20-completedCount);
+  document.getElementById('dcScore').textContent = score;
+  const pct = Math.round((completedCount/20)*100);
+  document.getElementById('progressFill').style.width = pct+'%';
+  document.getElementById('progressLabel').textContent = completedCount+' / 20 Tasks';
+  document.getElementById('progressPct').textContent = pct+'%';
+}
+
+/* ================= SIDEBAR NAV ================= */
+function renderNav(){
+  const nav = document.getElementById('navSections');
+  nav.innerHTML = '';
+  SECTIONS.forEach(sec=>{
+    const btn = document.createElement('button');
+    btn.className = 'nav-item' + (state.currentSection===sec.key ? ' active':'');
+    let countHtml = '';
+    if(sec.range){
+      const [a,b] = sec.range;
+      let c = 0;
+      for(let i=a;i<=b;i++){ if(state.taskCompleted[i]) c++; }
+      countHtml = `<span class="cnt">${c}/${b-a+1}</span>`;
+    }
+    btn.innerHTML = `<span class="num">${sec.num}</span><span class="lbl">${sec.label}</span>${countHtml}`;
+    btn.onclick = ()=>{ state.currentSection = sec.key; saveState(); render(); window.scrollTo(0,0); };
+    nav.appendChild(btn);
+  });
+}
+
+/* ================= TASK CARD RENDER ================= */
+function taskAnswerZoneHtml(task){
+  const ans = state.taskAnswers[task.id] || {};
+  if(task.type === 'self'){
+    const checked = !!state.taskCompleted[task.id];
+    return `
+      <div class="answer-zone">
+        <h5>Konfirmasi Penyelesaian</h5>
+        <p style="margin-bottom:10px;">Task ini bersifat praktik langsung di file Excel Anda (formatting, navigasi, PivotTable, dsb) sehingga tidak divalidasi otomatis oleh sistem.</p>
+        <button class="selfcheck-btn ${checked?'done':''}" onclick="markSelfDone(${task.id})">
+          ${checked ? '✓ Sudah Saya Selesaikan' : 'Tandai Sudah Selesai di Excel'}
+        </button>
+        <div class="self-check-note">Pada implementasi pelatihan sesungguhnya, Trainer akan memeriksa file Excel Anda secara langsung untuk memverifikasi task ini.</div>
+      </div>`;
+  }
+  if(task.type === 'open'){
+    const val = ans[task.fields[0].key] || '';
+    return `
+      <div class="answer-zone">
+        <h5>${task.fields[0].label}</h5>
+        <textarea class="open-answer" placeholder="Tulis ringkasan analisis dan rekomendasi Anda di sini..." oninput="saveOpenAnswer(${task.id}, '${task.fields[0].key}', this.value)">${val}</textarea>
+        <div class="self-check-note">Task ini dinilai penuh oleh Trainer secara manual berdasarkan kualitas analisis, bukan dicocokkan dengan satu jawaban baku.</div>
+      </div>`;
+  }
+  // auto_number / auto_text
+  let rows = task.fields.map(f=>{
+    const v = ans[f.key] !== undefined ? ans[f.key] : '';
+    const status = v==='' ? '' : (isFieldCorrect(f,v) ? 'correct' : 'incorrect');
+    const statusLabel = v==='' ? '' : (isFieldCorrect(f,v) ? '✓ Benar' : '✗ Cek lagi');
+    const statusClass = v==='' ? '' : (isFieldCorrect(f,v) ? 'ok' : 'no');
+    const inputType = task.type === 'auto_text' ? 'text' : 'number';
+    return `
+      <div class="af-row">
+        <label>${f.label}</label>
+        <input type="${inputType}" ${task.type==='auto_number' ? 'step="any"' : ''} class="${status}" value="${v}"
+          oninput="saveFieldAnswer(${task.id}, '${f.key}', this.value)" placeholder="Jawaban Anda">
+        <span class="af-status ${statusClass}">${statusLabel}</span>
+      </div>`;
+  }).join('');
+  return `
+    <div class="answer-zone">
+      <h5>Masukkan Hasil Perhitungan Anda</h5>
+      ${rows}
+      <div class="self-check-note">Masukkan angka/teks hasil formula yang Anda buat di Excel. Sistem akan memvalidasi otomatis.</div>
+    </div>`;
+}
+
+function trainerKeyHtml(task){
+  const open = !!state.keyOpen[task.id];
+  const ak = task.answerKey;
+  return `
+    <div class="trainer-key">
+      <button class="trainer-key-toggle" onclick="toggleKey(${task.id})">${open ? 'Sembunyikan Answer Key' : '🔒 Show Answer Key (Trainer Only)'}</button>
+      <div class="trainer-key-body ${open?'open':''}" id="key-${task.id}">
+        <h6>Formula / Langkah yang Diharapkan</h6>
+        <p><code>${ak.formula}</code></p>
+        <h6>Expected Result</h6>
+        <p>${ak.expected}</p>
+        <h6>Langkah Penyelesaian</h6>
+        <ul>${ak.steps.map(s=>`<li>${s}</li>`).join('')}</ul>
+        <h6>Bobot Nilai</h6>
+        <p>${task.weight} poin (kategori: ${task.category})</p>
+        <h6>Common Mistakes</h6>
+        <ul>${ak.mistakes.map(m=>`<li>${m}</li>`).join('')}</ul>
+      </div>
+    </div>`;
+}
+
+function badgeClassForLevel(levelKey){
+  return {basic:'badge-basic', basicplus:'badge-basicplus', intermediate:'badge-intermediate', intermediateplus:'badge-intermediateplus'}[levelKey] || 'badge-basic';
+}
+
+function renderTaskCard(task){
+  const completed = !!state.taskCompleted[task.id];
+  const bodyOpenState = window._openTaskId === task.id;
+  return `
+  <div class="task-card ${completed?'completed':''}" id="task-${task.id}">
+    <div class="task-head" onclick="toggleTaskBody(${task.id})">
+      <div class="task-checkbox ${completed?'checked':''}" onclick="event.stopPropagation(); toggleTaskCompleted(${task.id})">
+        <svg viewBox="0 0 16 16" fill="none"><path d="M3 8.5L6.2 12L13 4" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="task-head-main">
+        <div class="task-eyebrow">
+          <span>TASK ${task.id}</span>
+          <span class="weight-tag">${task.category} · ${task.weight} pts</span>
+        </div>
+        <p class="task-title">${task.title}</p>
+      </div>
+      <div class="task-toggle-icon">${bodyOpenState ? '▲' : '▼'}</div>
+    </div>
+    <div class="task-body ${bodyOpenState?'open':''}" id="task-body-${task.id}">
+      <div class="tb-section">
+        <h5>Skill yang Diuji</h5>
+        <p>${task.skill}</p>
+      </div>
+      <div class="tb-section">
+        <h5>Konteks Pekerjaan</h5>
+        <p>${task.context}</p>
+      </div>
+      <div class="tb-two-col">
+        <div class="tb-section">
+          <h5>Instruksi</h5>
+          <ol>${task.instructions.map(i=>`<li>${i}</li>`).join('')}</ol>
+        </div>
+        <div>
+          <div class="tb-section">
+            <h5>Input / Data</h5>
+            <p>${task.input}</p>
+          </div>
+          <div class="tb-section">
+            <h5>Expected Output</h5>
+            <p>${task.expectedOutput}</p>
+          </div>
+          <div class="tb-section">
+            <h5>Acceptance Criteria</h5>
+            <p>${task.acceptance}</p>
+          </div>
+        </div>
+      </div>
+      ${taskAnswerZoneHtml(task)}
+      ${state.mode==='trainer' ? trainerKeyHtml(task) : ''}
+    </div>
+  </div>`;
+}
+
+function toggleTaskBody(id){
+  window._openTaskId = (window._openTaskId === id) ? null : id;
+  renderContent();
+}
+function toggleTaskCompleted(id){
+  const wasCompleted = !!state.taskCompleted[id];
+  state.taskCompleted[id] = !wasCompleted;
+  saveState();
+  render();
+  if(!wasCompleted && state.taskCompleted[id]){
+    const task = TASKS.find(t=>t.id===id);
+    sendToSheet('task_complete', {taskId:id, taskTitle:task.title, detail: state.taskAnswers[id] || {}});
+  }
+}
+function markSelfDone(id){
+  const wasCompleted = !!state.taskCompleted[id];
+  state.taskCompleted[id] = true;
+  saveState();
+  render();
+  if(!wasCompleted){
+    const task = TASKS.find(t=>t.id===id);
+    sendToSheet('task_complete', {taskId:id, taskTitle:task.title, detail:{note:'self-declared completion'}});
+  }
+}
+function saveFieldAnswer(taskId, key, val){
+  if(!state.taskAnswers[taskId]) state.taskAnswers[taskId] = {};
+  state.taskAnswers[taskId][key] = val;
+  const task = TASKS.find(t=>t.id===taskId);
+  const wasCompleted = !!state.taskCompleted[taskId];
+  const allFilled = task.fields.every(f => (state.taskAnswers[taskId][f.key]||'') !== '');
+  const allCorrect = task.fields.every(f => isFieldCorrect(f, state.taskAnswers[taskId][f.key]));
+  if(allFilled && allCorrect){ state.taskCompleted[taskId] = true; }
+  saveState();
+  updateDashboard();
+  renderNav();
+  updateTaskCardUI(taskId);
+  if(!wasCompleted && state.taskCompleted[taskId]){
+    sendToSheet('task_complete', {taskId, taskTitle:task.title, detail: state.taskAnswers[taskId]});
+  }
+}
+function saveOpenAnswer(taskId, key, val){
+  if(!state.taskAnswers[taskId]) state.taskAnswers[taskId] = {};
+  state.taskAnswers[taskId][key] = val;
+  const task = TASKS.find(t=>t.id===taskId);
+  const wasCompleted = !!state.taskCompleted[taskId];
+  if(val.trim().length > 20){ state.taskCompleted[taskId] = true; }
+  saveState();
+  updateDashboard();
+  renderNav();
+  updateTaskCardUI(taskId);
+  if(!wasCompleted && state.taskCompleted[taskId]){
+    sendToSheet('task_complete', {taskId, taskTitle:task.title, detail: state.taskAnswers[taskId]});
+  }
+}
+/* Update a task card's completed styling + per-field validation feedback
+   WITHOUT re-rendering #content, so inputs never lose focus while typing. */
+function updateTaskCardUI(taskId){
+  const task = TASKS.find(t=>t.id===taskId);
+  const card = document.getElementById('task-'+taskId);
+  if(!card) return;
+  const isCompleted = !!state.taskCompleted[taskId];
+  card.classList.toggle('completed', isCompleted);
+  const cb = card.querySelector('.task-checkbox');
+  if(cb) cb.classList.toggle('checked', isCompleted);
+  if(task.fields && (task.type==='auto_number' || task.type==='auto_text')){
+    const rows = card.querySelectorAll('.af-row');
+    rows.forEach((row, idx)=>{
+      const f = task.fields[idx];
+      if(!f) return;
+      const input = row.querySelector('input');
+      const statusSpan = row.querySelector('.af-status');
+      const val = state.taskAnswers[taskId] ? state.taskAnswers[taskId][f.key] : undefined;
+      const v = (val!==undefined && val!==null) ? val : '';
+      if(v===''){
+        input.classList.remove('correct','incorrect');
+        statusSpan.textContent = '';
+        statusSpan.classList.remove('ok','no');
+      } else {
+        const ok = isFieldCorrect(f, v);
+        input.classList.toggle('correct', !!ok);
+        input.classList.toggle('incorrect', !ok);
+        statusSpan.textContent = ok ? '✓ Benar' : '✗ Cek lagi';
+        statusSpan.classList.toggle('ok', !!ok);
+        statusSpan.classList.toggle('no', !ok);
+      }
+    });
+  }
+}
+function toggleKey(id){
+  state.keyOpen[id] = !state.keyOpen[id];
+  saveState();
+  renderContent();
+}
+
+/* ================= DATASET TABLE ================= */
+function renderDatasetPanel(){
+  const rows = DATASET.map(r=>`
+    <tr>
+      <td>${r.id}</td>
+      <td>${r.nama}</td>
+      <td>${r.divisi}</td>
+      <td>${r.jabatan}</td>
+      <td>${r.kategori}</td>
+      <td>${r.program}</td>
+      <td>${fmtDateID(r.tanggal)}</td>
+      <td>${r.durasi}</td>
+      <td>${r.pre_test}</td>
+      <td>${r.post_test}</td>
+      <td>${r.target}</td>
+      <td><span class="status-pill ${r.status==='Lulus'?'status-lulus':'status-tidak'}">${r.status}</span></td>
+      <td>${r.cert_berlaku_sd ? fmtDateID(r.cert_berlaku_sd) : '-'}</td>
+      <td>${fmtRupiah(r.biaya)}</td>
+      <td>${r.trainer}</td>
+      <td>${r.kota}</td>
+    </tr>`).join('');
+  return `
+  <div class="dataset-panel">
+    <div class="level-heading"><h3>Dataset: Data Pelatihan &amp; Sertifikasi Karyawan</h3></div>
+    <p class="level-desc">Dataset ini digunakan di seluruh 20 task assessment. Gunakan data ini sebagai sumber saat Anda mengerjakan latihan di Microsoft Excel. Total <b>${DATASET.length} baris</b> data.</p>
+    <div class="dataset-toolbar">
+      <input type="text" id="datasetSearch" placeholder="Cari nama, divisi, program..." oninput="filterDataset()">
+      <span class="rubric-mini">Tip: salin tabel ini ke Excel Anda (select all &rarr; copy &rarr; paste) untuk mulai mengerjakan.</span>
+    </div>
+    <div class="table-scroll">
+      <table class="data-table" id="datasetTable">
+        <thead><tr>
+          <th>ID Pegawai</th><th>Nama</th><th>Divisi</th><th>Jabatan</th><th>Kategori</th><th>Program</th>
+          <th>Tgl Pelatihan</th><th>Durasi (jam)</th><th>Pre-Test</th><th>Post-Test</th><th>Target</th><th>Status</th>
+          <th>Sertifikat s.d.</th><th>Biaya</th><th>Trainer</th><th>Kota</th>
+        </tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>
+  </div>`;
+}
+function filterDataset(){
+  const q = document.getElementById('datasetSearch').value.toLowerCase();
+  const rows = document.querySelectorAll('#datasetTable tbody tr');
+  rows.forEach(r=>{
+    r.style.display = r.textContent.toLowerCase().includes(q) ? '' : 'none';
+  });
+}
+
+/* ================= FINAL RESULT ================= */
+function levelForScore(score){
+  if(score>=90) return {label:'Excellent', note:'Penguasaan Excel sangat kuat di seluruh level, siap menangani pekerjaan analitis kompleks.'};
+  if(score>=80) return {label:'Very Good', note:'Penguasaan Excel solid dengan sedikit area yang masih bisa diperdalam.'};
+  if(score>=70) return {label:'Good', note:'Fondasi Excel sudah baik, beberapa kompetensi intermediate perlu latihan tambahan.'};
+  if(score>=60) return {label:'Needs Improvement', note:'Kompetensi dasar sudah ada namun perlu penguatan pada beberapa area kunci.'};
+  return {label:'Below Standard', note:'Disarankan mengikuti kembali sesi pelatihan dasar Excel sebelum melanjutkan ke materi lanjutan.'};
+}
+
+function renderFinalResult(){
+  const {completedCount, score} = computeTotals();
+  const cats = computeCategoryBreakdown();
+  const lvl = levelForScore(score);
+  const pct = score; // out of 100
+
+  // strengths / dev areas
+  const catArr = Object.entries(cats).map(([name,v])=>({name, pct: v.max? (v.score/v.max*100):0, score:v.score, max:v.max}));
+  const sorted = [...catArr].sort((a,b)=>b.pct-a.pct);
+  const strengths = sorted.filter(c=>c.pct>=70).slice(0,4);
+  const devAreas = sorted.filter(c=>c.pct<70).sort((a,b)=>a.pct-b.pct).slice(0,4);
+
+  const recMap = {
+    'Data Entry & Formatting':'Latihan tambahan: workshop "Excel Fundamentals" — input data, formatting angka/tanggal/currency.',
+    'Formula Basic':'Latihan tambahan: modul "Formula Dasar Excel" — SUM, AVERAGE, MIN/MAX, COUNT, ROUND.',
+    'Conditional Logic':'Latihan tambahan: modul "Logika Kondisional" — IF, AND/OR, COUNTIF, SUMIF.',
+    'Data Cleaning':'Latihan tambahan: modul "Data Cleaning & Text Function" — TRIM, LEFT/RIGHT/MID, TEXTJOIN.',
+    'Data Validation':'Latihan tambahan: modul "Data Validation & Conditional Formatting".',
+    'Lookup':'Latihan tambahan: modul "XLOOKUP & VLOOKUP untuk Pencarian Data".',
+    'Conditional Aggregation':'Latihan tambahan: modul "SUMIFS & COUNTIFS Multi-Kriteria".',
+    'PivotTable':'Latihan tambahan: workshop "PivotTable & PivotChart untuk Analisis Data".',
+    'Visualization':'Latihan tambahan: modul "Membangun Dashboard Excel Sederhana".',
+    'Business Insight':'Latihan tambahan: coaching "Data Storytelling & Business Recommendation".'
+  };
+  const recommendations = devAreas.length ? devAreas.map(d=>recMap[d.name]).filter(Boolean) :
+    ['Pertimbangkan mengambil materi Excel tingkat Advanced (Power Query, Power Pivot) sebagai langkah pengembangan lanjutan.'];
+
+  const rows = catArr.map(c=>`
+    <tr>
+      <td>${c.name}</td>
+      <td>${Math.round(c.score*10)/10} / ${c.max}</td>
+      <td class="bar-cell"><div class="bar-track"><div class="bar-fill" style="width:${Math.min(100,c.pct)}%"></div></div></td>
+    </tr>`).join('');
+
+  return `
+  <div class="level-heading"><h3>Assessment Result</h3></div>
+  <div class="result-hero" style="--pct:${pct}">
+    <div class="result-score-ring"><div class="rs-val">${score}</div><div class="rs-max">/ 100</div></div>
+    <div class="result-info">
+      <span class="rs-level">${lvl.label}</span>
+      <h3>${state.participant.name || 'Peserta'} ${state.participant.divisi ? '· '+state.participant.divisi : ''}</h3>
+      <p>${lvl.note} Task terselesaikan: ${completedCount} dari 20. Waktu pengerjaan: ${fmtTimer(state.timer.elapsedSec)}.</p>
+    </div>
+  </div>
+
+  <div class="level-heading" style="margin-top:30px;"><h3 style="font-size:17px;">Breakdown per Kompetensi</h3></div>
+  <table class="breakdown-table">
+    <thead><tr><th>Competency</th><th>Score</th><th>Progress</th></tr></thead>
+    <tbody>${rows}</tbody>
+  </table>
+
+  <div class="strength-grid">
+    <div class="sg-card strength">
+      <h5>Strength</h5>
+      ${strengths.length ? `<ul>${strengths.map(s=>`<li>${s.name} (${Math.round(s.pct)}%)</li>`).join('')}</ul>` : `<p style="font-size:13px;">Selesaikan lebih banyak task untuk melihat kompetensi terkuat Anda.</p>`}
+    </div>
+    <div class="sg-card dev">
+      <h5>Development Area</h5>
+      ${devAreas.length ? `<ul>${devAreas.map(s=>`<li>${s.name} (${Math.round(s.pct)}%)</li>`).join('')}</ul>` : `<p style="font-size:13px;">Belum ada area yang signifikan tertinggal — pertahankan!</p>`}
+    </div>
+  </div>
+
+  <div class="level-heading" style="margin-top:26px;"><h3 style="font-size:17px;">Recommended Learning</h3></div>
+  <div class="recommend-list">
+    ${recommendations.map((r,i)=>`<div class="rec-item"><span class="rec-num">${i+1}</span><span class="rec-text">${r}</span></div>`).join('')}
+  </div>
+
+  <div class="level-heading" style="margin-top:26px;"><h3 style="font-size:17px;">Rubrik Penilaian (Total 100 Poin)</h3></div>
+  <table class="breakdown-table">
+    <thead><tr><th>Komponen</th><th>Bobot</th><th></th></tr></thead>
+    <tbody>
+      <tr><td>Data Entry &amp; Formatting</td><td>10</td><td></td></tr>
+      <tr><td>Formula Basic</td><td>15</td><td></td></tr>
+      <tr><td>Data Cleaning</td><td>10</td><td></td></tr>
+      <tr><td>Conditional Logic</td><td>15</td><td></td></tr>
+      <tr><td>Lookup</td><td>15</td><td></td></tr>
+      <tr><td>Conditional Aggregation</td><td>10</td><td></td></tr>
+      <tr><td>Data Validation &amp; Formatting</td><td>5</td><td></td></tr>
+      <tr><td>PivotTable</td><td>10</td><td></td></tr>
+      <tr><td>Visualization</td><td>5</td><td></td></tr>
+      <tr><td>Business Insight</td><td>5</td><td></td></tr>
+      <tr><td><b>TOTAL</b></td><td><b>100</b></td><td></td></tr>
+    </tbody>
+  </table>
+  <div class="rubric-legend">
+    <div class="rl-item"><span class="rl-dot" style="background:#B8842E;"></span>90–100 Excellent</div>
+    <div class="rl-item"><span class="rl-dot" style="background:#1D7A66;"></span>80–89 Very Good</div>
+    <div class="rl-item"><span class="rl-dot" style="background:#2A5DA8;"></span>70–79 Good</div>
+    <div class="rl-item"><span class="rl-dot" style="background:#8891A1;"></span>60–69 Needs Improvement</div>
+    <div class="rl-item"><span class="rl-dot" style="background:#B23B3B;"></span>&lt;60 Below Standard</div>
+  </div>
+
+  <div class="submit-bar">
+    <div>
+      <b>${state.submitted ? 'Assessment sudah disubmit.' : 'Siap mengakhiri assessment?'}</b>
+      <div class="rubric-mini">Submit akan mengunci waktu pengerjaan dan menyimpan hasil akhir Anda.</div>
+    </div>
+    <div style="display:flex; gap:10px;">
+      <button class="btn-secondary" onclick="resetAssessment()">Reset Assessment</button>
+      <button class="btn-primary" onclick="submitAssessment()">${state.submitted ? 'Sudah Disubmit ✓' : 'Submit Assessment'}</button>
+    </div>
+  </div>
+  `;
+}
+function submitAssessment(){
+  state.submitted = true;
+  state.timer.running = false;
+  saveState();
+  renderContent();
+  const breakdown = computeCategoryBreakdown();
+  sendToSheet('final_submit', {
+    detail: {
+      allAnswers: state.taskAnswers,
+      breakdown: breakdown
+    }
+  });
+}
+
+/* ================= RESET ================= */
+function resetAssessment(){
+  if(!confirm('Reset seluruh progress assessment? Tindakan ini tidak dapat dibatalkan.')) return;
+  localStorage.removeItem(STORAGE_KEY);
+  state = {
+    participant:{name:'', empId:'', divisi:''},
+    mode: state.mode,
+    currentSection:'basic',
+    taskCompleted:{},
+    taskAnswers:{},
+    keyOpen:{},
+    timer:{elapsedSec:0, running:true, lastTick:Date.now()},
+    submitted:false,
+    loggedIn:false,
+    sessionId:''
+  };
+  fillParticipantForm();
+  saveState();
+  showLoginIfNeeded();
+  render();
+}
+
+/* ================= MAIN RENDER ================= */
+function renderContent(){
+  const content = document.getElementById('content');
+  const sec = SECTIONS.find(s=>s.key===state.currentSection);
+  if(sec.key === 'final'){
+    content.innerHTML = renderFinalResult();
+    updateDashboard();
+    return;
+  }
+  const [a,b] = sec.range;
+  const tasksForSection = TASKS.filter(t=>t.id>=a && t.id<=b);
+  let html = '';
+  if(sec.key === 'basic'){
+    html += renderDatasetPanel();
+  }
+  html += `
+    <div class="level-heading">
+      <h3>${sec.num} · ${sec.label}</h3>
+      <span class="lvl-badge badge-${sec.key}">Task ${a}–${b}</span>
+    </div>
+    <p class="level-desc">${sec.desc}</p>
+  `;
+  html += tasksForSection.map(renderTaskCard).join('');
+  content.innerHTML = html;
+  updateDashboard();
+}
+
+function render(){
+  renderNav();
+  renderContent();
+}
+
+/* ================= INIT ================= */
+document.addEventListener('DOMContentLoaded', ()=>{
+  loadState();
+  fillParticipantForm();
+  document.getElementById('btnParticipantMode').classList.toggle('active', state.mode==='participant');
+  document.getElementById('btnTrainerMode').classList.toggle('active', state.mode==='trainer');
+  document.getElementById('timerToggleBtn').textContent = state.timer.running ? 'Jeda' : 'Lanjutkan';
+  document.getElementById('timerVal').textContent = fmtTimer(state.timer.elapsedSec);
+  showLoginIfNeeded();
+  if(GAS_WEB_APP_URL.indexOf('PASTE_') === 0){
+    const dot = document.getElementById('syncDot');
+    const txt = document.getElementById('syncText');
+    if(dot) dot.classList.add('off');
+    if(txt) txt.textContent = 'Google Sheet belum dikonfigurasi';
+  }
+  render();
+  startTimerLoop();
+});
+
+</script>
+</body>
+</html>
