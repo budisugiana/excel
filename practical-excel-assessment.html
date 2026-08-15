@@ -360,6 +360,14 @@ textarea.open-answer{
 .dataset-toolbar input{
   border:1px solid var(--line); border-radius:7px; padding:7px 12px; font-size:13px; width:240px; font-family:var(--sans);
 }
+.dataset-toolbar-right{display:flex; align-items:center; gap:10px; flex-wrap:wrap;}
+.copy-table-btn{
+  display:inline-flex; align-items:center; gap:6px;
+  background:var(--navy); color:#fff; border:none; padding:8px 14px; border-radius:7px;
+  font-size:12.5px; font-weight:600; cursor:pointer; font-family:var(--sans);
+}
+.copy-table-btn:hover{background:var(--ink);}
+.copy-table-btn.copied{background:var(--teal);}
 table.data-table{
   width:100%; border-collapse:collapse; font-size:12px; background:#fff;
   border:1px solid var(--line); border-radius:10px; overflow:hidden;
@@ -1162,6 +1170,47 @@ function toggleKey(id){
 }
 
 /* ================= DATASET TABLE ================= */
+function copyDatasetTable(){
+  const headers = ["ID Pegawai","Nama","Divisi","Jabatan","Kategori","Program","Tgl Pelatihan","Durasi (jam)","Pre-Test","Post-Test","Target","Status","Sertifikat s.d.","Biaya","Trainer","Kota"];
+  const lines = [headers.join('\t')];
+  DATASET.forEach(r=>{
+    const row = [
+      r.id, r.nama, r.divisi, r.jabatan, r.kategori, r.program,
+      fmtDateID(r.tanggal), r.durasi, r.pre_test, r.post_test, r.target, r.status,
+      r.cert_berlaku_sd ? fmtDateID(r.cert_berlaku_sd) : '-',
+      r.biaya, r.trainer, r.kota
+    ];
+    lines.push(row.join('\t'));
+  });
+  const text = lines.join('\n');
+  const btn = document.getElementById('copyDatasetBtn');
+  function markCopied(){
+    if(btn){
+      const original = btn.getAttribute('data-original') || btn.innerHTML;
+      btn.setAttribute('data-original', original);
+      btn.innerHTML = '✓ Tersalin!';
+      btn.classList.add('copied');
+      setTimeout(()=>{ btn.innerHTML = original; btn.classList.remove('copied'); }, 1800);
+    }
+  }
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(markCopied).catch(()=>{ fallbackCopy(text, markCopied); });
+  } else {
+    fallbackCopy(text, markCopied);
+  }
+}
+function fallbackCopy(text, cb){
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.position = 'fixed';
+  ta.style.opacity = '0';
+  document.body.appendChild(ta);
+  ta.focus();
+  ta.select();
+  try{ document.execCommand('copy'); }catch(e){ console.warn('copy fallback failed', e); }
+  document.body.removeChild(ta);
+  if(cb) cb();
+}
 function renderDatasetPanel(){
   const rows = DATASET.map(r=>`
     <tr>
@@ -1188,7 +1237,10 @@ function renderDatasetPanel(){
     <p class="level-desc">Dataset ini digunakan di seluruh 20 task assessment. Gunakan data ini sebagai sumber saat Anda mengerjakan latihan di Microsoft Excel. Total <b>${DATASET.length} baris</b> data.</p>
     <div class="dataset-toolbar">
       <input type="text" id="datasetSearch" placeholder="Cari nama, divisi, program..." oninput="filterDataset()">
-      <span class="rubric-mini">Tip: salin tabel ini ke Excel Anda (select all &rarr; copy &rarr; paste) untuk mulai mengerjakan.</span>
+      <div class="dataset-toolbar-right">
+        <span class="rubric-mini">Tip: salin tabel ini ke Excel Anda (select all &rarr; copy &rarr; paste) untuk mulai mengerjakan.</span>
+        <button type="button" class="copy-table-btn" id="copyDatasetBtn" onclick="copyDatasetTable()">📋 Copy Tabel</button>
+      </div>
     </div>
     <div class="table-scroll">
       <table class="data-table" id="datasetTable">
